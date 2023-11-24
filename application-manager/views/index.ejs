@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Home</title>
+    <link rel='stylesheet' href='/stylesheets/style.css' />
+</head>
+<body>
+    <% if (user) { %>
+        <h1>WELCOME BACK <%= user.username %></h1>
+        <a href="/logout">LOG OUT</a>
+    <% } else { %>
+        <form action="/login" method="POST">
+            <label for="username">Username</label>
+            <input name="username" placeholder="Username" type="text"/>
+            <label for="password">Password</label>
+            <input name="password" placeholder="Password" type="text"/>
+            <button>Log In</button>
+        </form>
+        <a href="/signup">Sign Up</a>
+    <% } %>
+</body>
+</html>
