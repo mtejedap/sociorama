@@ -3,56 +3,25 @@ const express = require('express');
 const path = require('path');
 const cookieParser = require('cookie-parser');
 const logger = require('morgan');
-const User = require('./models/user');
 require('dotenv').config();
 
-// Set up mongoose connection
+// Set up mongoose for mongoDB data handling
+
 const mongoose = require("mongoose");
-mongoose.set("strictQuery", false);
-const mongoDB = process.env.MONGODB_URI;
+const initializeMongoose = require('./mongoose-config');
+initializeMongoose(mongoose);
 
-main().catch((err) => console.log(err));
-    async function main() {
-    await mongoose.connect(mongoDB);
-}
+// Set up passport for user authentication and persistence
 
-// Set up passport and bcrypt
 const session = require("express-session");
 const passport = require('passport');
-const LocalStrategy = require('passport-local');
-const bcrypt = require("bcryptjs");
+const initializePassport = require('./passport-config');
+initializePassport(passport);
 
-passport.use(new LocalStrategy(async (username, password, done) => {
-    try {
-        const user = await User.findOne({ username: username });
-        if (!user) {
-            return done(null, false, { message: "Username does not exist" });
-        }
-        const passwordMatches = await bcrypt.compare(password, user.password);
-        if (!passwordMatches) {
-            return done(null, false, { message: "Incorrect password" })
-        }
-        return done(null, user);
-    } catch(err) {
-        return done(err);
-    }
-}));
-
-passport.serializeUser((user, done) => {
-    done(null, user.id);
-});
-
-passport.deserializeUser(async (id, done) => {
-    try {
-        const user = await User.findById(id);
-        done(null, user);
-    } catch(err) {
-        done(err);
-    }
-});
+// Set up routers
 
 const indexRouter = require('./routes/index');
-const signupRouter = require('./routes/signup');
+// const signupRouter = require('./routes/signup');
 
 const app = express();
 
@@ -60,7 +29,7 @@ const app = express();
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
 
-app.use(session({ secret: "cats", resave: false, saveUninitialized: true }));
+app.use(session({ secret: process.env.SESSION, resave: false, saveUninitialized: true }));
 app.use(passport.initialize());
 app.use(passport.session());
 app.use(logger('dev'));
@@ -70,7 +39,7 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', indexRouter);
-app.use('/signup', signupRouter);
+// app.use('/signup', signupRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
