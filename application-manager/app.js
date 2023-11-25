@@ -21,7 +21,7 @@ initializePassport(passport);
 // Set up routers
 
 const indexRouter = require('./routes/index');
-// const signupRouter = require('./routes/signup');
+const applicationsRouter = require('./routes/applications');
 
 const app = express();
 
@@ -39,7 +39,7 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', indexRouter);
-// app.use('/signup', signupRouter);
+app.use('/applications', applicationsRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
