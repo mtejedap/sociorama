@@ -38,3 +38,21 @@ exports.post_create_post = [
         }
     })
 ];
+
+exports.post_read_get = asyncHandler(async (req, res, next) => {
+    const post = await Post.findById(req.params.postid).exec();
+    if (post === null) {
+        const err = new Error("Post not found");
+        err.status = 404;
+        return next(err);
+    }
+    res.render("post_info", { post: post });
+});
+
+exports.post_update_get = asyncHandler(async (req, res, next) => {
+    res.render("post_form");
+});
+
+exports.post_update_post = asyncHandler(async (req, res, next) => {
+    
+});
