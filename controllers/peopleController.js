@@ -53,6 +53,35 @@ exports.post_update_get = asyncHandler(async (req, res, next) => {
     res.render("post_form");
 });
 
-exports.post_update_post = asyncHandler(async (req, res, next) => {
-    
+exports.post_update_post = [
+    body("text", "Text must not be empty.")
+        .trim()
+        .isLength({ min: 1 })
+        .escape(),
+    asyncHandler(async (req, res, next) => {
+        const errors = validationResult(req);
+        // const oldPost = await Post.findById(req.params.postid).exec();
+        // const post = new Post({
+        //     text: req.body.text,
+        //     date: new Date(),
+        //     user: req.user.username
+        // });
+        if (!errors.isEmpty()) {
+            res.render("home", {
+                post: post,
+                errors: errors.array()
+            });
+        } else {
+            // await post.save();
+            await Post.updateOne({ id: req.params.postid }, {
+                text: req.body.text
+            });
+            res.redirect("../");
+        }
+    })
+];
+
+exports.post_delete_get = asyncHandler(async (req, res, next) => {
+    await Post.deleteOne({ _id: req.params.postid });
+    res.redirect("/people/" + req.user.username);
 });
