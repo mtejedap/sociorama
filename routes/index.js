@@ -16,8 +16,12 @@ router.post('/signup', async (req, res, next) => {
     bcrypt.hash(req.body.password, 10, async (err, hashedPassword) => {
         try {
             const user = new User({
-              username: req.body.username,
-              password: hashedPassword
+                username: req.body.username,
+                password: hashedPassword,
+                firstname: req.body.firstname,
+                lastname: req.body.lastname,
+                gender: req.body.gender,
+                dob: req.body.dob,
             });
             const result = await user.save();
             res.redirect("/");

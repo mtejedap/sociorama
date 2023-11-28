@@ -26,7 +26,8 @@ exports.post_create_post = [
         const post = new Post({
             text: req.body.text,
             date: new Date(),
-            user: req.user.username
+            user: req.user.username,
+            likes: 0
         });
         if (!errors.isEmpty()) {
             res.render("home", {
@@ -87,6 +88,25 @@ exports.post_delete_get = asyncHandler(async (req, res, next) => {
     await Post.deleteOne({ _id: req.params.postid });
     
     res.redirect("/people/" + req.user.username);
+});
+
+exports.like_post = asyncHandler(async (req, res, next) => {
+    const post = await Post.findById(req.params.postid).exec();
+    let buttonToggle = "";
+
+    if (!post.likeUsers.includes(req.user.username)) {
+        await Post.updateOne({ _id: req.params.postid }, { $inc: { likes: 1 } });
+        await Post.updateOne({ _id: req.params.postid }, { $push: { likeUsers: req.user.username } });
+        buttonToggle = "Dislike Post";
+        postLikes = post.likes + 1;
+    } else {
+        await Post.updateOne({ _id: req.params.postid }, { $inc: { likes: -1 } });
+        await Post.updateOne({ _id: req.params.postid }, { $pull: { likeUsers: req.user.username } });
+        buttonToggle = "Like Post";
+        postLikes = post.likes - 1;
+    }
+
+    return res.status(200).json({ postLikes: postLikes, buttonToggle: buttonToggle });
 });
 
 exports.comment_create_get = asyncHandler(async (req, res, next) => {

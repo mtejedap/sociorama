@@ -23,6 +23,9 @@ router.post('/:userid/posts/:postid/update', peopleController.post_update_post);
 // GET request for deleting a post
 router.get('/:userid/posts/:postid/delete', peopleController.post_delete_get);
 
+// POST request for liking a post
+router.post('/:userid/posts/:postid/like', peopleController.like_post);
+
 // GET request for creating a comment
 router.get('/:userid/posts/:postid/comments/create', peopleController.comment_create_get);
 
