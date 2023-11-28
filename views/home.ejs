@@ -5,9 +5,9 @@
     <link rel='stylesheet' href='/stylesheets/style.css' />
 </head>
 <body>
-    <a href="/posts/create">Add New Post</a>
-    <% user.posts.forEach(function(post) { %>
-        <p><% post.text %></p>
+    <a href="<%= user.username %>/posts/create">Add New Post</a>
+    <% posts.forEach(function(post) { %>
+        <a href="<%= post.url %>"><%= post.text %></a>
     <% }); %>
 </body>
 </html>
