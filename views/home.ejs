@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Home</title>
+    <link rel='stylesheet' href='/stylesheets/style.css' />
+</head>
+<body>
+    <a href="/posts/create">Add New Post</a>
+    <% user.posts.forEach(function(post) { %>
+        <p><% post.text %></p>
+    <% }); %>
+</body>
+</html>

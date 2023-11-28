@@ -9,7 +9,7 @@ router.get('/', function(req, res, next) {
 });
 
 router.get('/signup', function(req, res, next) {
-    res.render('signup', { title: 'Express' });
+    res.render('signup');
 });
 
 router.post('/signup', async (req, res, next) => {
@@ -27,10 +27,10 @@ router.post('/signup', async (req, res, next) => {
     });
 });
 
-router.post('/login', passport.authenticate('local', {
-    successRedirect: '/applications',
+router.post('/login', (req, res, next) => {passport.authenticate('local', {
+    successRedirect: '/people/' + req.body.username,
     failureRedirect: '/'
-}));
+})(req, res, next)});
 
 router.get('/logout', (req, res, next) => {
     req.logout((err) => {
