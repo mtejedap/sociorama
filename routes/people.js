@@ -23,4 +23,16 @@ router.post('/:userid/posts/:postid/update', peopleController.post_update_post);
 // GET request for deleting a post
 router.get('/:userid/posts/:postid/delete', peopleController.post_delete_get);
 
+// GET request for creating a comment
+router.get('/:userid/posts/:postid/comments/create', peopleController.comment_create_get);
+
+// POST request for creating a comment
+router.post('/:userid/posts/:postid/comments/create', peopleController.comment_create_post);
+
+// POST request for updating a comment
+router.post('/:userid/posts/:postid/comments/:commentid/update', peopleController.comment_update_post);
+
+// GET request for deleting a comment
+router.get('/:userid/posts/:postid/comments/:commentid/delete', peopleController.comment_delete_get);
+
 module.exports = router;
