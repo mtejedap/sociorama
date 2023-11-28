@@ -73,10 +73,10 @@ exports.post_update_post = [
             });
         } else {
             // await post.save();
-            await Post.updateOne({ id: req.params.postid }, {
+            await Post.updateOne({ _id: req.params.postid }, {
                 text: req.body.text
             });
-            res.redirect("../");
+            res.redirect("/people/" + req.user.username + "/posts/" + req.params.postid);
         }
     })
 ];
