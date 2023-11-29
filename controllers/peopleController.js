@@ -5,11 +5,43 @@ const Comment = require('../models/comment');
 const { body, validationResult } = require("express-validator");
 
 exports.index = asyncHandler(async (req, res, next) => {
-    const user = await User.findOne({ username: req.user.username }).exec();
-    console.log(user.id);
+    const user = await User.findOne({ username: req.user.username }).populate("friends").exec();
     const posts = await Post.find({ user: user.username }).exec();
-    console.log(posts);
     res.render("home", { user: user, posts: posts });
+});
+
+exports.profile = asyncHandler(async (req, res, next) => {
+    const profileUser = await User.findOne({ username: req.params.userid }).exec();
+    const currentUser = await User.findOne({ username: req.user.username }).exec();
+    const posts = await Post.find({ user: profileUser.username }).exec();
+    res.render("profile", { profileUser: profileUser, currentUser: currentUser, posts: posts });
+});
+
+exports.friend = asyncHandler(async (req, res, next) => {
+    await User.updateOne({ username: req.params.userid }, { $push: { friendRequests: req.user.username } });
+    res.redirect("/people/" + req.params.userid + "/profile");
+});
+
+exports.accept = asyncHandler(async (req, res, next) => {
+    const friendRequestUser = await User.findOne({ username: req.params.userid }).exec();
+    const currentUser = await User.findOne({ username: req.user.username }).exec();
+    await User.updateOne({ username: req.user.username }, { $pull: { friendRequests: req.params.userid } });
+    await User.updateOne({ username: req.user.username }, { $push: { friends: friendRequestUser._id } });
+    await User.updateOne({ username: req.params.userid}, { $push: { friends: currentUser._id } });
+    res.redirect("/people/" + req.user.username);
+});
+
+exports.reject = asyncHandler(async (req, res, next) => {
+    await User.updateOne({ username: req.user.username }, { $pull: { friendRequests: req.params.userid } });
+    res.redirect("/people/" + req.user.username);
+});
+
+exports.unfriend = asyncHandler(async (req, res, next) => {
+    const friendRequestUser = await User.findOne({ username: req.params.userid }).exec();
+    const currentUser = await User.findOne({ username: req.user.username }).exec();
+    await User.updateOne({ username: req.params.userid }, { $pull: { friends: currentUser._id } });
+    await User.updateOne({ username: req.user.username }, { $pull: { friends: friendRequestUser._id } });
+    res.redirect("/people/" + req.params.userid + "/profile");
 });
 
 exports.post_create_get = asyncHandler(async (req, res, next) => {

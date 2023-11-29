@@ -9,7 +9,9 @@ const UserSchema = new Schema({
     lastname: { type: String, required: true },
     gender: { type: String, required: true },
     dob: { type: String, required: true },
-    posts: [{ type: Schema.Types.ObjectId, ref: "Post" }]
+    posts: [{ type: Schema.Types.ObjectId, ref: "Post" }],
+    friends: [{ type: Schema.Types.ObjectId, ref: "User" }],
+    friendRequests: [{ type: String }]
 });
 
 module.exports = mongoose.model("User", UserSchema);

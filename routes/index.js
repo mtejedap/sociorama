@@ -21,7 +21,7 @@ router.post('/signup', async (req, res, next) => {
                 firstname: req.body.firstname,
                 lastname: req.body.lastname,
                 gender: req.body.gender,
-                dob: req.body.dob,
+                dob: req.body.dob
             });
             const result = await user.save();
             res.redirect("/");

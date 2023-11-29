@@ -5,6 +5,21 @@ const router = express.Router();
 // GET user home page
 router.get('/:userid', peopleController.index);
 
+// GET user profile page
+router.get('/:userid/profile', peopleController.profile);
+
+// GET request for sending friend request
+router.get('/:userid/friend', peopleController.friend);
+
+// GET request for accepting friend request
+router.get('/:userid/accept', peopleController.accept);
+
+// GET request for rejecting friend request
+router.get('/:userid/reject', peopleController.reject);
+
+// GET request for removing friend
+router.get('/:userid/unfriend', peopleController.unfriend);
+
 // GET request for creating a post
 router.get('/:userid/posts/create', peopleController.post_create_get);
 

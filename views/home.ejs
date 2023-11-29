@@ -9,5 +9,12 @@
     <% posts.forEach(function(post) { %>
         <a href="<%= post.url %>"><%= post.text %></a>
     <% }); %>
+    <% user.friends.forEach(function(friend) { %>
+        <a href="<%= friend.username %>/profile"><%= friend.firstname %> <%= friend.lastname %></a>
+    <% }); %>
+    <% user.friendRequests.forEach(function(friendRequest) { %>
+        <a href="<%= friendRequest %>/accept">Accept friend request from: <%= friendRequest %></a>
+        <a href="<%= friendRequest %>/reject">Reject friend request from: <%= friendRequest %></a>
+    <% }); %>
 </body>
 </html>
