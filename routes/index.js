@@ -4,15 +4,24 @@ const bcrypt = require('bcryptjs');
 const User = require('../models/user');
 const router = express.Router();
 
-router.get('/', function(req, res, next) {
+// Only allow unauthenticated users to access the login/signup pages
+function checkAuthenticated(req, res, next) {
+    if (req.isAuthenticated()) {
+        res.redirect('/people/' + req.user.username);
+    } else {
+        return next();
+    }
+} 
+
+router.get('/', checkAuthenticated, function(req, res, next) {
     res.render('index', { user: req.user });
 });
 
-router.get('/signup', function(req, res, next) {
+router.get('/signup', checkAuthenticated, function(req, res, next) {
     res.render('signup');
 });
 
-router.post('/signup', async (req, res, next) => {
+router.post('/signup', checkAuthenticated, async (req, res, next) => {
     bcrypt.hash(req.body.password, 10, async (err, hashedPassword) => {
         try {
             const userExists = await User.findOne({ username: req.body.username }).exec();
@@ -36,7 +45,7 @@ router.post('/signup', async (req, res, next) => {
     });
 });
 
-router.post('/login', (req, res, next) => {passport.authenticate('local', {
+router.post('/login', checkAuthenticated, (req, res, next) => {passport.authenticate('local', {
     successRedirect: '/people/' + req.body.username,
     failureRedirect: '/'
 })(req, res, next)});
