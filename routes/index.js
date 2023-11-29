@@ -15,6 +15,11 @@ router.get('/signup', function(req, res, next) {
 router.post('/signup', async (req, res, next) => {
     bcrypt.hash(req.body.password, 10, async (err, hashedPassword) => {
         try {
+            const userExists = await User.findOne({ username: req.body.username }).exec();
+            if (userExists) {
+                res.redirect("/signup");
+                return;
+            }
             const user = new User({
                 username: req.body.username,
                 password: hashedPassword,
