@@ -1,3 +1,5 @@
+/* Color palette: https://coolors.co/palette/d8f3dc-b7e4c7-95d5b2-74c69d-52b788-40916c-2d6a4f-1b4332-081c15 */
+
 * {
     margin: 0;
     padding: 0;
@@ -5,19 +7,69 @@
 }
 
 .content-wrapper {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    width: 75%;
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background-color: #40916C;
+}
+
+.logo {
+    cursor: default;
+    font-size: 64px;
+    color: white;
+    margin-bottom: 32px;
 }
 
 .input-box {
-    border: solid;
+    width: 400px;
+    border-style: none;
+    box-shadow: 0 0 8px 2px #081C15;
+    border-radius: 8px;
     padding: 16px;
+    background-color: #D8F3DC;
+}
+
+.login-box, .login,
+.signup-box, .signup {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    text-align: center;
+    font-size: 18px;
+}
+
+input {
+    border-width: 1px;
+    border-style: solid;
+    border-radius: 6px;
+    font-size: 17px;
+    padding: 8px;
+    margin-bottom: 16px;
+}
+
+button {
+    border-style: none;
+    cursor: pointer;
+    border-radius: 6px;
+    padding: 8px;
+    font-size: 17px;
+    background-color: #40916C;
+    color: white;
+    font-weight: bold;
+}
+
+.login-button, .signup-box-button {
+    margin-bottom: 16px;
 }
 
 .signup-header {
     display: flex;
     justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
 }
 
 .signup-header svg {
@@ -37,4 +89,12 @@
 
 .hidden {
     display: none;
+}
+
+@media (max-width: 900px) {
+    .content-wrapper {
+        width: auto;
+        height: auto;
+        padding: 32px;
+    }
 }

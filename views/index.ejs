@@ -7,19 +7,19 @@
 <body>
 
     <div class="content-wrapper">
-        <div class="logo"></div>
+        <p class="logo">Sociorama</p>
         <div class="input-box">
             <div class="login-box">
                 <form class="login" action="/login" method="POST">
-                    <input class="login-username-input" name="username" placeholder="Username" type="text" required/>
-                    <input class="login-password-input" name="password" placeholder="Password" type="text" required/>
+                    <input class="login-username-input" name="username" placeholder="Username" type="text"/>
+                    <input class="login-password-input" name="password" placeholder="Password" type="text"/>
                     <% if (errorMessage) { %>
                         <p class="login-error"><%= errorMessage %></p>
                     <% } %>
                     <button class="login-button">Log In</button>
                 </form>
-                <p>or</p>
                 <button class="signup-box-button">Sign Up</button>
+                <button class="guest-button">Log In as Guest</button>
             </div>
             <div class="signup-box hidden">
                 <div class="signup-header">
@@ -29,10 +29,10 @@
                     </svg>
                 </div>
                 <form class="signup" action="/signup" method="POST">
-                    <input class="signup-firstname-input" name="firstname" placeholder="First Name" type="text" required/>
-                    <input class="signup-lastname-input" name="lastname" placeholder="Last Name" type="text" required/>
-                    <input class="signup-username-input" name="username" placeholder="Username" type="text" required/>
-                    <input class="signup-password-input" name="password" placeholder="Password" type="text" required/>
+                    <input class="signup-firstname-input" name="firstname" placeholder="First Name" type="text"/>
+                    <input class="signup-lastname-input" name="lastname" placeholder="Last Name" type="text"/>
+                    <input class="signup-username-input" name="username" placeholder="Username" type="text"/>
+                    <input class="signup-password-input" name="password" placeholder="Password" type="text"/>
                     <p class="signup-error"></p>
                     <button class="signup-button">Sign Up</button>
                 </form>
@@ -59,11 +59,29 @@
         signupBoxButton.addEventListener("click", () => {
             document.querySelector(".login-box").classList.toggle("hidden");
             document.querySelector(".signup-box").classList.toggle("hidden");
+            document.querySelector(".login-error").textContent = "";
         });
         const signupCancel = document.querySelector(".signup-cancel");
         signupCancel.addEventListener("click", () => {
             document.querySelector(".login-box").classList.toggle("hidden");
             document.querySelector(".signup-box").classList.toggle("hidden");
+            document.querySelector(".signup-error").textContent = "";
+        });
+        const guestButton = document.querySelector(".guest-button");
+        guestButton.addEventListener("click", async () => {
+            const form = document.createElement('form');
+            form.setAttribute('action', '/guest-login');
+            form.setAttribute('method', 'POST');
+            const usernameInput = document.createElement('input');
+            usernameInput.setAttribute('name', 'username');
+            usernameInput.value = "guest";
+            const passwordInput = document.createElement('input');
+            passwordInput.setAttribute('name', 'password');
+            passwordInput.value = "guest";
+            form.appendChild(usernameInput);
+            form.appendChild(passwordInput);
+            document.body.appendChild(form);
+            form.submit();
         });
     </script>
 </body>

@@ -49,6 +49,16 @@ router.post('/login', checkAuthenticated, (req, res, next) => {passport.authenti
     failureFlash: true
 })(req, res, next)});
 
+function generateGuest(req, res, next) {
+    return next();
+}
+
+router.post('/guest-login', checkAuthenticated, generateGuest, (req, res, next) => {passport.authenticate('local', {
+    successRedirect: '/people/' + req.body.username,
+    failureRedirect: '/',
+    failureFlash: true
+})(req, res, next)});
+
 router.get('/logout', (req, res, next) => {
     req.logout((err) => {
         if (err) {
