@@ -1,6 +1,7 @@
 const createError = require('http-errors');
 const express = require('express');
 const path = require('path');
+const flash = require('connect-flash');
 const cookieParser = require('cookie-parser');
 const logger = require('morgan');
 require('dotenv').config();
@@ -31,6 +32,7 @@ app.set('view engine', 'ejs');
 app.use(session({ secret: process.env.SESSION, resave: false, saveUninitialized: true }));
 app.use(passport.initialize());
 app.use(passport.session());
+app.use(flash());
 app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));

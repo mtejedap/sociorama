@@ -1,8 +1,40 @@
-body {
-  padding: 50px;
-  font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
 }
 
-a {
-  color: #00B7FF;
+.content-wrapper {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    width: 75%;
+}
+
+.input-box {
+    border: solid;
+    padding: 16px;
+}
+
+.signup-header {
+    display: flex;
+    justify-content: space-between;
+}
+
+.signup-header svg {
+    cursor: pointer;
+    width: 1rem;
+}
+
+.login-username-input, .login-password-input {
+    display: block;
+}
+
+.login-error, .signup-error,
+.signup-firstname-error, .signup-lastname-error,
+.signup-username-error, .signup-password-error {
+    color: red;
+}
+
+.hidden {
+    display: none;
 }

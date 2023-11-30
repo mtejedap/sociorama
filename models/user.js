@@ -7,8 +7,6 @@ const UserSchema = new Schema({
     password: { type: String, required: true },
     firstname: { type: String, required: true },
     lastname: { type: String, required: true },
-    gender: { type: String, required: true },
-    dob: { type: String, required: true },
     posts: [{ type: Schema.Types.ObjectId, ref: "Post" }],
     friends: [{ type: Schema.Types.ObjectId, ref: "User" }],
     friendRequests: [{ type: String }]

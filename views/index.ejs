@@ -1,22 +1,70 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Home</title>
+    <title>Sociorama</title>
     <link rel='stylesheet' href='/stylesheets/style.css' />
 </head>
 <body>
-    <% if (user) { %>
-        <h1>WELCOME BACK <%= user.username %></h1>
-        <a href="/logout">LOG OUT</a>
-    <% } else { %>
-        <form action="/login" method="POST">
-            <label for="username">Username</label>
-            <input name="username" placeholder="Username" type="text"/>
-            <label for="password">Password</label>
-            <input name="password" placeholder="Password" type="text"/>
-            <button>Log In</button>
-        </form>
-        <a href="/signup">Sign Up</a>
-    <% } %>
+
+    <div class="content-wrapper">
+        <div class="logo"></div>
+        <div class="input-box">
+            <div class="login-box">
+                <form class="login" action="/login" method="POST">
+                    <input class="login-username-input" name="username" placeholder="Username" type="text" required/>
+                    <input class="login-password-input" name="password" placeholder="Password" type="text" required/>
+                    <% if (errorMessage) { %>
+                        <p class="login-error"><%= errorMessage %></p>
+                    <% } %>
+                    <button class="login-button">Log In</button>
+                </form>
+                <p>or</p>
+                <button class="signup-box-button">Sign Up</button>
+            </div>
+            <div class="signup-box hidden">
+                <div class="signup-header">
+                    <p>Sign Up</p>
+                    <svg class="signup-cancel" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
+                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"/>
+                    </svg>
+                </div>
+                <form class="signup" action="/signup" method="POST">
+                    <input class="signup-firstname-input" name="firstname" placeholder="First Name" type="text" required/>
+                    <input class="signup-lastname-input" name="lastname" placeholder="Last Name" type="text" required/>
+                    <input class="signup-username-input" name="username" placeholder="Username" type="text" required/>
+                    <input class="signup-password-input" name="password" placeholder="Password" type="text" required/>
+                    <p class="signup-error"></p>
+                    <button class="signup-button">Sign Up</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const signupButton = document.querySelector(".signup-button");
+        signupButton.addEventListener("click", async (event) => {
+            event.preventDefault();
+            const data = {
+                username: document.querySelector(".signup-username-input").value
+            }
+            const response = await fetch("check-username", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) });
+            const responseData = await response.json();
+            if (responseData.signupErrorMessage === "Username is taken") {
+                document.querySelector(".signup-error").textContent = responseData.signupErrorMessage;
+                return;
+            }
+            document.querySelector(".signup").submit();
+        });
+        const signupBoxButton = document.querySelector(".signup-box-button");
+        signupBoxButton.addEventListener("click", () => {
+            document.querySelector(".login-box").classList.toggle("hidden");
+            document.querySelector(".signup-box").classList.toggle("hidden");
+        });
+        const signupCancel = document.querySelector(".signup-cancel");
+        signupCancel.addEventListener("click", () => {
+            document.querySelector(".login-box").classList.toggle("hidden");
+            document.querySelector(".signup-box").classList.toggle("hidden");
+        });
+    </script>
 </body>
 </html>

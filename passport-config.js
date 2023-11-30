@@ -7,7 +7,7 @@ function initializePassport(passport) {
         try {
             const user = await User.findOne({ username: username });
             if (!user) {
-                return done(null, false, { message: "Username does not exist" });
+                return done(null, false, { message: "User does not exist" });
             }
             const passwordMatches = await bcrypt.compare(password, user.password);
             if (!passwordMatches) {
