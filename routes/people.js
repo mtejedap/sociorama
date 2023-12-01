@@ -38,20 +38,14 @@ router.post('/:userid/posts/create', checkAuthenticated, peopleController.post_c
 // GET request for reading a post
 router.get('/:userid/posts/:postid', checkAuthenticated, peopleController.post_read_get);
 
-// GET request for updating a post
-router.get('/:userid/posts/:postid/update', checkAuthenticated, peopleController.post_update_get);
-
 // POST request for updating a post
 router.post('/:userid/posts/:postid/update', checkAuthenticated, peopleController.post_update_post);
 
-// GET request for deleting a post
-router.get('/:userid/posts/:postid/delete', checkAuthenticated, peopleController.post_delete_get);
+// POST request for deleting a post
+router.post('/:userid/posts/:postid/delete', checkAuthenticated, peopleController.post_delete_post);
 
 // POST request for liking a post
 router.post('/:userid/posts/:postid/like', checkAuthenticated, peopleController.like_post);
-
-// GET request for creating a comment
-router.get('/:userid/posts/:postid/comments/create', checkAuthenticated, peopleController.comment_create_get);
 
 // POST request for creating a comment
 router.post('/:userid/posts/:postid/comments/create', checkAuthenticated, peopleController.comment_create_post);
@@ -59,7 +53,7 @@ router.post('/:userid/posts/:postid/comments/create', checkAuthenticated, people
 // POST request for updating a comment
 router.post('/:userid/posts/:postid/comments/:commentid/update', checkAuthenticated, peopleController.comment_update_post);
 
-// GET request for deleting a comment
-router.get('/:userid/posts/:postid/comments/:commentid/delete', checkAuthenticated, peopleController.comment_delete_get);
+// POST request for deleting a comment
+router.post('/:userid/posts/:postid/comments/:commentid/delete', checkAuthenticated, peopleController.comment_delete_post);
 
 module.exports = router;

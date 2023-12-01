@@ -40,7 +40,65 @@
         </div>
         <div class="post-list">
             <% posts.forEach(function(post) { %>
-                <a href="<%= post.url %>"><%= post.text %></a>
+                <div class="post">
+                    <div class="post-header">
+                        <a href="/people/<%= post.user %>/profile"><%= post.userFirstName %> <%= post.userLastName %></a>
+                        <p>posted <%= lowercase(moment(post.date).calendar()) %></p>
+                        <% if (post.user === user.username) { %>
+                            <button class="display-update" data-id="<%= post._id %>">Update</button>
+                            <form action="<%= post.url %>/delete" method="POST">
+                                <button>Delete</button>
+                            </form>
+                        <% } %>
+                    </div>
+                    <p class="post-text<%= post._id %>"><%= post.text %></p>
+                    <form class="post-update<%= post._id %> hidden" action="<%= post.url %>/update" method="POST">
+                        <div class="post-input-wrapper">
+                            <textarea class="post-input" name="text" type="text"><%= post.text %></textarea>
+                            <button class="update-button">Update</button>
+                        </div>
+                    </form>
+                    <div>
+                        <p class="id<%= post._id %>">Likes: <%= post.likes %></p>
+                        <a class="display-comments" href="#" data-id="<%= post._id %>"><%= post.commentCount %> Comments</a>
+                    </div>
+                    <div class="comment-list<%= post._id %> hidden">
+                        <% post.comments.forEach(function(comment) { %>
+                            <p><%= comment.user %></p>
+                            <p>posted <%= lowercase(moment(comment.date).calendar()) %></p>
+                            <p class="comment-text<%= comment._id %>"><%= comment.text %></p>
+                            <form class="comment-update<%= comment._id %> hidden" action="<%= post.url %>/comments/<%= comment._id %>/update" method="POST">
+                                <div class="comment-input-wrapper">
+                                    <textarea class="comment-input" name="text" type="text"><%= comment.text %></textarea>
+                                    <button class="update-button">Update</button>
+                                </div>
+                            </form>
+                            <% if (comment.user === user.username) { %>
+                                <button class="display-comment-update" data-id="<%= comment._id %>">Update</button>
+                                <form action="<%= post.url %>/comments/<%= comment._id %>/delete" method="POST">
+                                    <button>Delete</button>
+                                </form>
+                            <% } %>
+                        <% }); %>
+                    </div>
+                    <div>
+                        <button class="likeButton" data-url="<%= post.url %>/like" data-id="<%= post._id %>">
+                            <% if (!post.likeUsers.includes(user.username)) { %>
+                                Like
+                            <% } else { %>
+                                Unlike
+                            <% } %>
+                        </button>
+                        <button class="commentButton" data-id="<%= post._id %>">Comment</button>
+                    </div>
+
+                    <form class="comment<%= post._id %> hidden" action="<%= post.url %>/comments/create" method="POST">
+                        <div class="comment-input-wrapper">
+                            <textarea class="comment-input" name="text" placeholder="Text" type="text"></textarea>
+                            <button class="comment-button">Comment</button>
+                        </div>
+                    </form>
+                </div>
             <% }); %>
         </div>
         <div class="user-list">
@@ -58,6 +116,42 @@
         const profileDropdown = document.querySelector(".profile-header");
         profileDropdown.addEventListener("click", () => {
             document.querySelector(".profile-dropdown").classList.toggle("hidden");
+        });
+        const likeButtons = document.querySelectorAll(".likeButton");
+        likeButtons.forEach(likeButton => {
+            likeButton.addEventListener("click", async () => {
+                const response = await fetch(likeButton.dataset.url, { method: "POST" });
+                const responseData = await response.json();
+                const likes = document.querySelector(".id" + likeButton.dataset.id);
+                likes.textContent = "Likes: " + responseData.postLikes;
+                likeButton.textContent = responseData.buttonToggle;
+            });
+        });
+        const commentButtons = document.querySelectorAll(".commentButton");
+        commentButtons.forEach(commentButton => {
+            commentButton.addEventListener("click", () => {
+                document.querySelector(".comment" + commentButton.dataset.id).classList.toggle("hidden");
+            });
+        });
+        const displayComments = document.querySelectorAll(".display-comments");
+        displayComments.forEach(displayComments => {
+            displayComments.addEventListener("click", () => {
+                document.querySelector(".comment-list" + displayComments.dataset.id).classList.toggle("hidden");
+            });
+        });
+        const displayUpdate = document.querySelectorAll(".display-update");
+        displayUpdate.forEach(displayUpdate => {
+            displayUpdate.addEventListener("click", () => {
+                document.querySelector(".post-update" + displayUpdate.dataset.id).classList.toggle("hidden");
+                document.querySelector(".post-text" + displayUpdate.dataset.id).classList.toggle("hidden");
+            });
+        });
+        const displayCommentUpdate = document.querySelectorAll(".display-comment-update");
+        displayCommentUpdate.forEach(displayCommentUpdate => {
+            displayCommentUpdate.addEventListener("click", () => {
+                document.querySelector(".comment-update" + displayCommentUpdate.dataset.id).classList.toggle("hidden");
+                document.querySelector(".comment-text" + displayCommentUpdate.dataset.id).classList.toggle("hidden");
+            });
         });
     </script>
 </body>
