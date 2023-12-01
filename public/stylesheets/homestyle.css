@@ -25,11 +25,6 @@
     display: flex;
 }
 
-.friend-requests {
-    width: 1rem;
-    fill: white;
-}
-
 .profile-header, .logo {
     cursor: pointer;
     display: flex;
