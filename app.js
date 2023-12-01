@@ -21,7 +21,7 @@ initializePassport(passport);
 
 // Set up routers
 
-const indexRouter = require('./routes/index');
+const loginRouter = require('./routes/login');
 const peopleRouter = require('./routes/people');
 
 // Start express
@@ -41,7 +41,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 // Use routers
 
-app.use('/', indexRouter);
+app.use('/', loginRouter);
 app.use('/people', peopleRouter);
 
 // catch 404 and forward to error handler

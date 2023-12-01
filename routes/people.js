@@ -29,9 +29,6 @@ router.get('/:userid/reject', checkAuthenticated, peopleController.reject);
 // GET request for removing friend
 router.get('/:userid/unfriend', checkAuthenticated, peopleController.unfriend);
 
-// GET request for creating a post
-router.get('/:userid/posts/create', checkAuthenticated, peopleController.post_create_get);
-
 // POST request for creating a post
 router.post('/:userid/posts/create', checkAuthenticated, peopleController.post_create_post);
 

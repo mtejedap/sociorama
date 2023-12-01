@@ -7,7 +7,8 @@ const { body, validationResult } = require("express-validator");
 exports.index = asyncHandler(async (req, res, next) => {
     const user = await User.findOne({ username: req.user.username }).populate("friends").exec();
     const posts = await Post.find({ user: user.username }).exec();
-    res.render("home", { user: user, posts: posts });
+    const userList = await User.find().sort({ firstname: 1 }).exec();
+    res.render("home", { user: user, posts: posts, userList: userList });
 });
 
 exports.profile = asyncHandler(async (req, res, next) => {
@@ -42,10 +43,6 @@ exports.unfriend = asyncHandler(async (req, res, next) => {
     await User.updateOne({ username: req.params.userid }, { $pull: { friends: currentUser._id } });
     await User.updateOne({ username: req.user.username }, { $pull: { friends: friendRequestUser._id } });
     res.redirect("/people/" + req.params.userid + "/profile");
-});
-
-exports.post_create_get = asyncHandler(async (req, res, next) => {
-    res.render("post_form");
 });
 
 exports.post_create_post = [

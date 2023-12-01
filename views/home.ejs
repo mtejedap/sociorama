@@ -1,20 +1,64 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Home</title>
-    <link rel='stylesheet' href='/stylesheets/style.css' />
+    <title>Sociorama</title>
+    <link rel='stylesheet' href='/stylesheets/homestyle.css' />
 </head>
 <body>
-    <a href="<%= user.username %>/posts/create">Add New Post</a>
-    <% posts.forEach(function(post) { %>
-        <a href="<%= post.url %>"><%= post.text %></a>
-    <% }); %>
-    <% user.friends.forEach(function(friend) { %>
-        <a href="<%= friend.username %>/profile"><%= friend.firstname %> <%= friend.lastname %></a>
-    <% }); %>
-    <% user.friendRequests.forEach(function(friendRequest) { %>
-        <a href="<%= friendRequest %>/accept">Accept friend request from: <%= friendRequest %></a>
-        <a href="<%= friendRequest %>/reject">Reject friend request from: <%= friendRequest %></a>
-    <% }); %>
+
+    <div class="header">
+        <a href="/" class="logo">Sociorama</a>
+        <div class="right">
+            <div class="profile-wrapper">
+                <div class="profile-header">
+                    <img class="profile-picture" src="/images/default.jpg">
+                    <p><%= user.firstname %> <%= user.lastname %></p>
+                </div>
+                <div class="profile-dropdown hidden">
+                    <a href="/people/<%= user.username %>/profile">Profile</a>
+                    <a href="/logout">Logout</a>
+                </div>
+            </div>
+            <svg class="friend-requests" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 14 20">
+                <path d="M12.133 10.632v-1.8A5.406 5.406 0 0 0 7.979 3.57.946.946 0 0 0 8 3.464V1.1a1 1 0 0 0-2 0v2.364a.946.946 0 0 0 .021.106 5.406 5.406 0 0 0-4.154 5.262v1.8C1.867 13.018 0 13.614 0 14.807 0 15.4 0 16 .538 16h12.924C14 16 14 15.4 14 14.807c0-1.193-1.867-1.789-1.867-4.175ZM3.823 17a3.453 3.453 0 0 0 6.354 0H3.823Z"/>
+            </svg>
+        </div>
+    </div>
+
+    <div class="content-wrapper">
+        <form action="/people/<%= user.username %>/posts/create" method="POST">
+            <div class="post-input-wrapper">
+                <textarea class="post-input" name="text" placeholder="Text" type="text"></textarea>
+                <button class="post-button">Post</button>
+            </div>
+        </form>
+        <div class="friend-list">
+            <p>Friends</p>
+            <% user.friends.forEach(function(friend) { %>
+                <a href="<%= friend.username %>/profile"><%= friend.firstname %> <%= friend.lastname %></a>
+            <% }); %>
+        </div>
+        <div class="post-list">
+            <% posts.forEach(function(post) { %>
+                <a href="<%= post.url %>"><%= post.text %></a>
+            <% }); %>
+        </div>
+        <div class="user-list">
+            <p>All Users</p>
+            <% userList.forEach(function(user) { %>
+                <a href="<%= user.username %>/profile"><%= user.firstname %> <%= user.lastname %></a>
+            <% }); %>
+        </div>
+        <% user.friendRequests.forEach(function(friendRequest) { %>
+            <a href="<%= friendRequest %>/accept">Accept friend request from: <%= friendRequest %></a>
+            <a href="<%= friendRequest %>/reject">Reject friend request from: <%= friendRequest %></a>
+        <% }); %>
+    </div>
+    <script>
+        const profileDropdown = document.querySelector(".profile-header");
+        profileDropdown.addEventListener("click", () => {
+            document.querySelector(".profile-dropdown").classList.toggle("hidden");
+        });
+    </script>
 </body>
 </html>

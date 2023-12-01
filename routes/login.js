@@ -14,7 +14,7 @@ function checkAuthenticated(req, res, next) {
 }
 
 router.get('/', checkAuthenticated, function(req, res, next) {
-    res.render('index', { errorMessage: req.flash('error') });
+    res.render('login', { errorMessage: req.flash('error') });
 });
 
 router.post('/signup', checkAuthenticated, async (req, res, next) => {
