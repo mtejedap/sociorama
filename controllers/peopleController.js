@@ -11,6 +11,31 @@ exports.index = asyncHandler(async (req, res, next) => {
     res.render("home", { user: user, posts: posts, userList: userList });
 });
 
+exports.delete = asyncHandler(async (req, res, next) => {
+    // Save username for queries
+    const username = req.user.username;
+
+    // Logout from session
+    req.logout((err) => {
+        if (err) {
+            return next(err);
+        }
+    });
+
+    // Delete all posts from the user and their respective comments
+    const posts = await Post.find({ user: username }).populate("comments").exec();
+    posts.forEach(async post => {
+        post.comments.forEach(async comment => {
+            await Comment.deleteOne({ _id: comment._id });
+        });
+        await Post.deleteOne({ _id: post._id });
+    });
+
+    // Delete the user and redirect to login page
+    await User.deleteOne({ username: username });
+    res.redirect("/");
+});
+
 exports.profile = asyncHandler(async (req, res, next) => {
     const profileUser = await User.findOne({ username: req.params.userid }).exec();
     const currentUser = await User.findOne({ username: req.user.username }).exec();
@@ -182,7 +207,6 @@ exports.comment_update_post = [
                 errors: errors.array()
             });
         } else {
-            console.log(req.params.commentid);
             await Comment.updateOne({ _id: req.params.commentid }, {
                 text: req.body.text
             });

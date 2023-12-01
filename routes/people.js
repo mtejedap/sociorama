@@ -14,6 +14,9 @@ function checkAuthenticated(req, res, next) {
 // GET user home page
 router.get('/:userid', checkAuthenticated, peopleController.index);
 
+// POST request for deleting an user
+router.post('/:userid/delete', checkAuthenticated, peopleController.delete);
+
 // GET user profile page
 router.get('/:userid/profile', checkAuthenticated, peopleController.profile);
 

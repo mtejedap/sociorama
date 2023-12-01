@@ -24,6 +24,11 @@
         <div class="profile-info">
             <p><%= profileUser.firstname %> <%= profileUser.lastname %></p>
             <p>@<%= profileUser.username %></p>
+            <% if (profileUser.username === currentUser.username) { %>
+                <form action="/people/<%= currentUser.username %>/delete" method="POST">
+                    <button>Delete Account</button>
+                </form>
+            <% } %>
         </div>
         <p><%= profileUser.firstname %> <%= profileUser.lastname %></p>
         <% console.log(profileUser.friends) %>
