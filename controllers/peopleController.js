@@ -5,6 +5,7 @@ const Comment = require('../models/comment');
 const moment = require('moment');
 const { body, validationResult } = require("express-validator");
 
+// Turn the first character of a moment date string into lowercase for formatting purposes
 function lowercase(str) {
     if (str.length === 0) {
       return str;
@@ -13,6 +14,7 @@ function lowercase(str) {
     return firstCharLowercase + str.slice(1);
 }
 
+// Display user home page
 exports.index = asyncHandler(async (req, res, next) => {
     const user = await User.findOne({ username: req.user.username }).populate("friends").exec();
     const posts = await Post.find().sort({ date: -1 }).limit(10).populate("comments").exec();
@@ -20,22 +22,20 @@ exports.index = asyncHandler(async (req, res, next) => {
     res.render("home", { user: user, posts: posts, userList: userList, moment: moment, lowercase: lowercase });
 });
 
+// Delete an user from the database
 exports.delete = asyncHandler(async (req, res, next) => {
     // Prevent users from being able to delete other users
     if (req.user.username !== req.params.userid) {
         res.redirect("/");
     }
-
     // Save username for queries
     const username = req.user.username;
-
     // Logout from session
     req.logout((err) => {
         if (err) {
             return next(err);
         }
     });
-
     // Delete all posts from the user and their respective comments
     const posts = await Post.find({ user: username }).populate("comments").exec();
     posts.forEach(async post => {
@@ -44,12 +44,12 @@ exports.delete = asyncHandler(async (req, res, next) => {
         });
         await Post.deleteOne({ _id: post._id });
     });
-
     // Delete the user and redirect to login page
     await User.deleteOne({ username: username });
     res.redirect("/");
 });
 
+// Display user profile page
 exports.profile = asyncHandler(async (req, res, next) => {
     const profileUser = await User.findOne({ username: req.params.userid }).exec();
     const currentUser = await User.findOne({ username: req.user.username }).exec();
@@ -57,12 +57,14 @@ exports.profile = asyncHandler(async (req, res, next) => {
     res.render("profile", { profileUser: profileUser, currentUser: currentUser, posts: posts });
 });
 
-exports.friend = asyncHandler(async (req, res, next) => {
+// Add friend request to an user's friend request list
+exports.sendFriendRequest = asyncHandler(async (req, res, next) => {
     await User.updateOne({ username: req.params.userid }, { $push: { friendRequests: req.user.username } });
     res.redirect("/people/" + req.params.userid + "/profile");
 });
 
-exports.accept = asyncHandler(async (req, res, next) => {
+// Accept friend request
+exports.acceptFriendRequest = asyncHandler(async (req, res, next) => {
     const friendRequestUser = await User.findOne({ username: req.params.userid }).exec();
     const currentUser = await User.findOne({ username: req.user.username }).exec();
     await User.updateOne({ username: req.user.username }, { $pull: { friendRequests: req.params.userid } });
@@ -71,12 +73,14 @@ exports.accept = asyncHandler(async (req, res, next) => {
     res.redirect("/people/" + req.user.username);
 });
 
-exports.reject = asyncHandler(async (req, res, next) => {
+// Reject friend request
+exports.rejectFriendRequest = asyncHandler(async (req, res, next) => {
     await User.updateOne({ username: req.user.username }, { $pull: { friendRequests: req.params.userid } });
     res.redirect("/people/" + req.user.username);
 });
 
-exports.unfriend = asyncHandler(async (req, res, next) => {
+// Remove friend from user's friend list
+exports.removeFriend = asyncHandler(async (req, res, next) => {
     const friendRequestUser = await User.findOne({ username: req.params.userid }).exec();
     const currentUser = await User.findOne({ username: req.user.username }).exec();
     await User.updateOne({ username: req.params.userid }, { $pull: { friends: currentUser._id } });
@@ -84,7 +88,8 @@ exports.unfriend = asyncHandler(async (req, res, next) => {
     res.redirect("/people/" + req.params.userid + "/profile");
 });
 
-exports.post_create_post = [
+// Create post
+exports.postCreate = [
     body("text", "Text must not be empty.")
         .trim()
         .isLength({ min: 1 })
@@ -111,7 +116,8 @@ exports.post_create_post = [
     })
 ];
 
-exports.post_read_get = asyncHandler(async (req, res, next) => {
+// Display post
+exports.postRead = asyncHandler(async (req, res, next) => {
     const post = await Post.findById(req.params.postid).populate("comments").exec();
     if (post === null) {
         const err = new Error("Post not found");
@@ -121,7 +127,8 @@ exports.post_read_get = asyncHandler(async (req, res, next) => {
     res.render("post_info", { post: post, user: req.user.username });
 });
 
-exports.post_update_post = [
+// Update post
+exports.postUpdate = [
     body("text", "Text must not be empty.")
         .trim()
         .isLength({ min: 1 })
@@ -142,24 +149,22 @@ exports.post_update_post = [
     })
 ];
 
-exports.post_delete_post = asyncHandler(async (req, res, next) => {
-
+// Delete post
+exports.postDelete = asyncHandler(async (req, res, next) => {
     // Delete all comments in post
     const post = await Post.findById(req.params.postid).populate("comments").exec();
     post.comments.forEach(async comment => {
         await Comment.deleteOne({ _id: comment._id });
     });
-
     // Delete post from database
     await Post.deleteOne({ _id: req.params.postid });
-    
     res.redirect("/people/" + req.user.username);
 });
 
-exports.like_post = asyncHandler(async (req, res, next) => {
+// Like/unlike a post depending on whether the user has liked it or not before
+exports.likePost = asyncHandler(async (req, res, next) => {
     const post = await Post.findById(req.params.postid).exec();
     let buttonToggle = "";
-
     if (!post.likeUsers.includes(req.user.username)) {
         await Post.updateOne({ _id: req.params.postid }, { $inc: { likes: 1 } });
         await Post.updateOne({ _id: req.params.postid }, { $push: { likeUsers: req.user.username } });
@@ -171,11 +176,11 @@ exports.like_post = asyncHandler(async (req, res, next) => {
         buttonToggle = "Like";
         postLikes = post.likes - 1;
     }
-
     return res.status(200).json({ postLikes: postLikes, buttonToggle: buttonToggle });
 });
 
-exports.comment_create_post = [
+// Create comment
+exports.commentCreate = [
     body("text", "Text must not be empty.")
         .trim()
         .isLength({ min: 1 })
@@ -202,7 +207,8 @@ exports.comment_create_post = [
     })
 ];
 
-exports.comment_update_post = [
+// Update comment
+exports.commentUpdate = [
     body("text", "Text must not be empty.")
         .trim()
         .isLength({ min: 1 })
@@ -223,13 +229,11 @@ exports.comment_update_post = [
     })
 ];
 
-exports.comment_delete_post = asyncHandler(async (req, res, next) => {
-
+// Delete comment
+exports.commentDelete = asyncHandler(async (req, res, next) => {
     // Delete comment from reference array in post
     await Post.updateOne({ _id: req.params.postid }, { $pull: { comments: req.params.commentid } });
-
     // Delete comment from database
     await Comment.deleteOne({ _id: req.params.commentid });
-
     res.redirect("/");
 });
