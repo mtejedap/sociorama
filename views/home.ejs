@@ -78,9 +78,9 @@
             <% posts.forEach(function(post) { %>
                 <div class="post">
                     <div class="post-header">
-                        <a class="post-header-2" href="/people/<%= post.user %>/profile"><img class="profile-picture" src="<%= post.pfp %>"><%= post.userFirstName %> <%= post.userLastName %></a>
+                        <a class="post-header-2" href="/people/<%= post.author.username %>/profile"><img class="profile-picture" src="<%= post.author.pfp %>"><%= post.author.firstname %> <%= post.author.lastname %></a>
                         <p>posted <%= lowercase(moment(post.date).calendar()) %></p>
-                        <% if (post.user === user.username) { %>
+                        <% if (post.author.username === user.username) { %>
                             <span> | </span>
                             <button class="display-update" data-id="<%= post._id %>">Edit</button>
                             <span> | </span>
@@ -138,9 +138,9 @@
                         </form>
                         <% post.comments.forEach(function(comment) { %>
                             <div class="comment-header">
-                                <a class="comment-header" href="/people/<%= comment.user %>/profile"><img class="profile-picture" src="<%= comment.pfp %>"><%= comment.userFirstName %> <%= comment.userLastName %></a>
+                                <a class="comment-header" href="/people/<%= comment.author.username %>/profile"><img class="profile-picture" src="<%= comment.author.pfp %>"><%= comment.author.firstname %> <%= comment.author.lastname %></a>
                                 <p>commented <%= lowercase(moment(comment.date).calendar()) %></p>
-                                <% if (comment.user === user.username) { %>
+                                <% if (comment.author.username === user.username) { %>
                                     <span> | </span>
                                     <button class="display-comment-update" data-id="<%= comment._id %>">Edit</button>
                                     <span> | </span>

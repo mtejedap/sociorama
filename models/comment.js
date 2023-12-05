@@ -5,10 +5,7 @@ const Schema = mongoose.Schema;
 const CommentSchema = new Schema({
     text: { type: String, required: true },
     date: { type: Date, required: true },
-    user: { type: String, required: true },
-    userFirstName: { type: String, required: true },
-    userLastName: { type: String, required: true },
-    pfp: { type: String, required: true }
+    author: { type: Schema.Types.ObjectId, ref: "User" }
 });
 
 module.exports = mongoose.model("Comment", CommentSchema);
