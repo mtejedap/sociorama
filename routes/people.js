@@ -20,14 +20,17 @@ router.post('/:userid/delete', checkAuthenticated, peopleController.delete);
 // GET request for displaying user profile page
 router.get('/:userid/profile', checkAuthenticated, peopleController.profile);
 
+// POST request for updating user profile picture
+router.post('/:userid/update-pfp', checkAuthenticated, peopleController.updatePfp);
+
 // GET request for sending friend request
 router.get('/:userid/friend', checkAuthenticated, peopleController.sendFriendRequest);
 
-// GET request for accepting friend request
-router.get('/:userid/accept', checkAuthenticated, peopleController.acceptFriendRequest);
+// POST request for accepting friend request
+router.post('/:userid/accept', checkAuthenticated, peopleController.acceptFriendRequest);
 
-// GET request for rejecting friend request
-router.get('/:userid/reject', checkAuthenticated, peopleController.rejectFriendRequest);
+// POST request for rejecting friend request
+router.post('/:userid/reject', checkAuthenticated, peopleController.rejectFriendRequest);
 
 // GET request for removing friend
 router.get('/:userid/unfriend', checkAuthenticated, peopleController.removeFriend);

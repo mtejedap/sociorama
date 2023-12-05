@@ -10,7 +10,7 @@
         <a href="/" class="logo">Sociorama</a>
         <div class="profile-wrapper">
             <div class="profile-header">
-                <img class="profile-picture" src="/images/default.jpg">
+                <img class="profile-picture" src="<%= currentUser.pfp %>">
                 <p><%= currentUser.firstname %> <%= currentUser.lastname %></p>
             </div>
             <div class="profile-dropdown hidden">
@@ -22,6 +22,13 @@
 
     <div class="content-wrapper">
         <div class="profile-info">
+            <img class="profile-picture" src="<%= profileUser.pfp %>">
+            <% if (profileUser.username === currentUser.username) { %>
+                <form action="update-pfp" method="post" enctype="multipart/form-data">
+                    <input type="file" name="pfp" accept="image/jpeg, image/png">
+                    <input type="submit" value="Upload">
+                </form>
+            <% } %>
             <p><%= profileUser.firstname %> <%= profileUser.lastname %></p>
             <p>@<%= profileUser.username %></p>
             <% if (profileUser.username === currentUser.username) { %>
@@ -36,8 +43,10 @@
         <% if (profileUser.username !== currentUser.username) { %>
             <% if (profileUser.friends[0] !== undefined && profileUser.friends.includes(currentUser._id)) { %>
                 <a href="unfriend">Remove Friend</a>
-            <% } else if (profileUser.friendRequests[0] !== undefined && profileUser.friendRequests.includes(currentUser.username)) { %>
+            <% } else if (profileUser.friendRequests[0] !== undefined && profileUser.friendRequests.includes(currentUser._id)) { %>
                 <p>Friend Request Sent</p>
+            <% } else if (currentUser.friendRequests[0] !== undefined && currentUser.friendRequests.includes(profileUser._id)) { %>
+                <p>Friend Request Pending</p>
             <% } else { %>
                 <a href="friend">Send Friend Request</a>
             <% } %>

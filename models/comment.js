@@ -7,7 +7,8 @@ const CommentSchema = new Schema({
     date: { type: Date, required: true },
     user: { type: String, required: true },
     userFirstName: { type: String, required: true },
-    userLastName: { type: String, required: true }
+    userLastName: { type: String, required: true },
+    pfp: { type: String, required: true }
 });
 
 module.exports = mongoose.model("Comment", CommentSchema);

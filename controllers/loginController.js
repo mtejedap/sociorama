@@ -16,7 +16,8 @@ exports.signup = asyncHandler(async (req, res, next) => {
                 username: req.body.username,
                 password: hashedPassword,
                 firstname: req.body.firstname,
-                lastname: req.body.lastname
+                lastname: req.body.lastname,
+                pfp: "/images/default.jpg"
             });
             await user.save();
             res.redirect("/");

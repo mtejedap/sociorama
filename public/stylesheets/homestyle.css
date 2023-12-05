@@ -3,10 +3,32 @@
     padding: 0;
     box-sizing: border-box;
     font-family: Helvetica, Arial, sans-serif;
+    font-size: 17px;
+}
+
+a {
+    color: #2d6a4f;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+button {
+    border-style: none;
+    cursor: pointer;
+    border-radius: 6px;
+    padding: 8px;
+    font-size: 17px;
+    background-color: #40916C;
+    color: white;
+    font-weight: bold;
+}
+
+.comment-icon, .like-icon, .unlike-icon {
+    width: 1rem;
 }
 
 .header {
-    padding: 0 20%;
+    padding: 0 12.5%;
     margin: auto;
     width: 100%;
     display: flex;
@@ -19,6 +41,7 @@
     color: white;
     text-decoration: none;
     font-size: 30px;
+    font-weight: normal;
 }
 
 .right {
@@ -71,7 +94,16 @@
     background-color: lightgray;
 }
 
-.post-input-wrapper, .friend-list,
+.content-wrapper {
+    padding: 32px 8px;
+    width: 75%;
+    margin: auto;
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 16px;
+}
+
+.post-input-wrapper, .comment-input-wrapper, .friend-list,
 .post-list, .user-list, .post {
     border-style: solid;
     border-width: 1px;
@@ -79,25 +111,156 @@
     padding: 12px;
 }
 
-.post-input {
+.post-input, .comment-input {
     width: 100%;
     height: 200px;
     resize: none;
     border-style: none;
+    outline: none;
+    font-size: 17px;
+}
+
+.post-button-wrapper, .comment-button-wrapper {
+    display: flex;
+    justify-content: flex-end;
+}
+
+.post-button, .comment-button {
+    border-style: none;
+    cursor: pointer;
+    border-radius: 6px;
+    padding: 8px;
+    font-size: 17px;
+    background-color: #40916C;
+    color: white;
+    font-weight: bold;
+}
+
+.display-update, .display-comment-update, .delete-button {
+    background:none;
+    border:none;
+    margin:0;
+    padding:0;
+    cursor: pointer;
+    color: #40916C;
+    font-weight: normal;
+}
+
+.friend-list-header2 {
+    margin-top: 16px;
 }
 
 .post-header {
     display: flex;
-    gap: 4px;
+    justify-content: flex-start;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 12px;
 }
 
-.content-wrapper {
-    padding: 32px 8px;
-    width: 60%;
-    margin: auto;
-    display: grid;
-    grid-template-columns: 2fr 1fr;
-    gap: 16px;
+.post-header-2 {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    gap: 8px;
+}
+
+.post-body {
+    margin-bottom: 12px;
+}
+
+.likes-and-comments {
+    display: flex;
+    justify-content: flex-start;
+    gap: 12px;
+}
+
+.like-wrapper, .comment-wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+    font-size: 17px;
+    font-weight: bold;
+    border-radius: 6px;
+    background-color: #40916C;
+    color: white;
+    padding: 8px;
+}
+
+.like-wrapper:hover, .comment-wrapper:hover {
+    cursor: pointer;
+}
+
+.comment-wrapper a {
+    color: white;
+}
+
+.comment-header {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    gap: 8px;
+    margin-block: 12px;
+}
+
+.comment {
+    margin-top: 12px;
+}
+
+.commentButton {
+    border-style: none;
+    cursor: pointer;
+    border-radius: 6px;
+    padding: 8px;
+    margin-top: 12px;
+    font-size: 17px;
+    background-color: #40916C;
+    color: white;
+    font-weight: bold;
+}
+
+.header-text {
+    font-size: 21px;
+    margin-bottom: 12px;
+}
+
+.friends {
+    margin-bottom: 12px;
+}
+
+.accept-friend-request, .reject-friend-request {
+    border-radius: 4px;
+    padding: 2px;
+}
+
+.reject-friend-request {
+    background-color: #914040;
+}
+
+.accept-friend-request-wrapper, .reject-friend-request-wrapper {
+    display: flex;
+    align-items: center;
+    padding: 1px 4px;
+}
+
+.accept-friend-request-icon, .reject-friend-request-icon {
+    width: 1em;
+    height: 1em;
+}
+
+.friend-requests {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    gap: 8px;
+}
+
+.friend-cell, .user-cell {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    gap: 8px;
 }
 
 .hidden {

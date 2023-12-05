@@ -3,7 +3,23 @@ const User = require('../models/user');
 const Post = require('../models/post');
 const Comment = require('../models/comment');
 const moment = require('moment');
+const multer = require('multer');
+const path = require('path');
+const fs = require('fs');
 const { body, validationResult } = require("express-validator");
+
+// Initialize multer for handling profile picture uploads
+const storage = multer.diskStorage({
+    destination: function (req, file, cb) {
+        cb(null, 'public/images/')
+    },
+    filename: async function (req, file, cb) {
+        // Update database with reference to profile picture path
+        await User.updateOne({ username: req.user.username }, { pfp: "/images/" +  req.user._id + "." + path.basename(file.mimetype)});
+        cb(null, "" + req.user._id + "." + path.basename(file.mimetype));
+    }
+});
+const upload = multer({ storage: storage });
 
 // Turn the first character of a moment date string into lowercase for formatting purposes
 function lowercase(str) {
@@ -16,8 +32,8 @@ function lowercase(str) {
 
 // Display user home page
 exports.index = asyncHandler(async (req, res, next) => {
-    const user = await User.findOne({ username: req.user.username }).populate("friends").exec();
-    const posts = await Post.find().sort({ date: -1 }).limit(10).populate("comments").exec();
+    const user = await User.findOne({ username: req.user.username }).populate("friends").populate("friendRequests").exec();
+    const posts = await Post.find().sort({ date: -1 }).limit(10).populate({ path: "comments", options: { sort: { "date": -1 } } }).exec();
     const userList = await User.find().sort({ firstname: 1 }).exec();
     res.render("home", { user: user, posts: posts, userList: userList, moment: moment, lowercase: lowercase });
 });
@@ -57,25 +73,50 @@ exports.profile = asyncHandler(async (req, res, next) => {
     res.render("profile", { profileUser: profileUser, currentUser: currentUser, posts: posts });
 });
 
+// Delete existing pfp and replace it with a new one
+exports.updatePfp = asyncHandler(async (req, res, next) => {
+    if (fs.existsSync('public/images/' + req.user._id + ".jpg")) {
+        fs.unlink('public/images/' + req.user._id + ".jpg", (err) => {
+            if (err) {
+                console.error('Error deleting previous file:', err);
+            }
+        });
+    } else if (fs.existsSync('public/images/' + req.user._id + ".jpeg")) {
+        fs.unlink('public/images/' + req.user._id + ".jpeg", (err) => {
+            if (err) {
+                console.error('Error deleting previous file:', err);
+            }
+        });
+    } else if (fs.existsSync('public/images/' + req.user._id + ".png")) {
+        fs.unlink('public/images/' + req.user._id + ".png", (err) => {
+            if (err) {
+                console.error('Error deleting previous file:', err);
+            }
+        });
+    }
+    upload.single('pfp')(req, res, next);
+    res.redirect("/people/" + req.user.username + "/profile");
+});
+
 // Add friend request to an user's friend request list
 exports.sendFriendRequest = asyncHandler(async (req, res, next) => {
-    await User.updateOne({ username: req.params.userid }, { $push: { friendRequests: req.user.username } });
+    await User.updateOne({ username: req.params.userid }, { $push: { friendRequests: req.user._id } });
     res.redirect("/people/" + req.params.userid + "/profile");
 });
 
 // Accept friend request
 exports.acceptFriendRequest = asyncHandler(async (req, res, next) => {
     const friendRequestUser = await User.findOne({ username: req.params.userid }).exec();
-    const currentUser = await User.findOne({ username: req.user.username }).exec();
-    await User.updateOne({ username: req.user.username }, { $pull: { friendRequests: req.params.userid } });
+    await User.updateOne({ username: req.user.username }, { $pull: { friendRequests: friendRequestUser._id } });
     await User.updateOne({ username: req.user.username }, { $push: { friends: friendRequestUser._id } });
-    await User.updateOne({ username: req.params.userid}, { $push: { friends: currentUser._id } });
+    await User.updateOne({ username: req.params.userid}, { $push: { friends: req.user._id } });
     res.redirect("/people/" + req.user.username);
 });
 
 // Reject friend request
 exports.rejectFriendRequest = asyncHandler(async (req, res, next) => {
-    await User.updateOne({ username: req.user.username }, { $pull: { friendRequests: req.params.userid } });
+    const friendRequestUser = await User.findOne({ username: req.params.userid }).exec();
+    await User.updateOne({ username: req.user.username }, { $pull: { friendRequests: friendRequestUser._id } });
     res.redirect("/people/" + req.user.username);
 });
 
@@ -102,6 +143,7 @@ exports.postCreate = [
             user: req.user.username,
             userFirstName: req.user.firstname,
             userLastName: req.user.lastname,
+            pfp: req.user.pfp,
             likes: 0
         });
         if (!errors.isEmpty()) {
@@ -168,15 +210,13 @@ exports.likePost = asyncHandler(async (req, res, next) => {
     if (!post.likeUsers.includes(req.user.username)) {
         await Post.updateOne({ _id: req.params.postid }, { $inc: { likes: 1 } });
         await Post.updateOne({ _id: req.params.postid }, { $push: { likeUsers: req.user.username } });
-        buttonToggle = "Unlike";
         postLikes = post.likes + 1;
     } else {
         await Post.updateOne({ _id: req.params.postid }, { $inc: { likes: -1 } });
         await Post.updateOne({ _id: req.params.postid }, { $pull: { likeUsers: req.user.username } });
-        buttonToggle = "Like";
         postLikes = post.likes - 1;
     }
-    return res.status(200).json({ postLikes: postLikes, buttonToggle: buttonToggle });
+    return res.status(200).json({ postLikes: postLikes });
 });
 
 // Create comment
@@ -190,7 +230,10 @@ exports.commentCreate = [
         const comment = new Comment({
             text: req.body.text,
             date: new Date(),
-            user: req.user.username
+            user: req.user.username,
+            userFirstName: req.user.firstname,
+            userLastName: req.user.lastname,
+            pfp: req.user.pfp
         });
         if (!errors.isEmpty()) {
             res.render("home", {
