@@ -6,19 +6,20 @@
 }
 
 .header {
-    padding: 0 20%;
+    padding: 0 15%;
     margin: auto;
     width: 100%;
     display: flex;
     justify-content: space-between;
-    align-items: center;
+    align-items: stretch;
     background-color: #40916C;
 }
 
 .logo {
     color: white;
     text-decoration: none;
-    font-size: 30px;
+    font-size: 36px;
+    font-weight: normal;
 }
 
 .profile-header, .logo {
@@ -32,7 +33,9 @@
 }
 
 .profile-header {
-    font-size: 17px;
+    font-size: 18px;
+    font-weight: bold;
+    height: 100%;
 }
 
 .profile-header:hover {
@@ -45,12 +48,17 @@
     height: 32px;
 }
 
+.profile-wrapper {
+    position: relative;
+}
+
 .profile-dropdown {
     display: block;
     position: absolute;
+    width: 100%;
     border-style: solid;
     border-width: 1px;
-    width: 200px;
+    background-color: white;
 }
 
 .profile-dropdown a {
@@ -58,12 +66,13 @@
     text-decoration: none;
     padding: 8px;
     color: black;
-    font-size: 17px;
+    font-size: 18px;
+    font-weight: normal;
 }
 
 .profile-dropdown a:hover {
     cursor: pointer;
-    background-color: lightgray;
+    background-color: rgb(240, 240, 240);
 }
 
 .profile-info {

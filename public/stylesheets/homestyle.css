@@ -3,7 +3,7 @@
     padding: 0;
     box-sizing: border-box;
     font-family: Helvetica, Arial, sans-serif;
-    font-size: 17px;
+    font-size: 18px;
 }
 
 a {
@@ -17,10 +17,14 @@ button {
     cursor: pointer;
     border-radius: 6px;
     padding: 8px;
-    font-size: 17px;
+    font-size: 18px;
     background-color: #40916C;
     color: white;
     font-weight: bold;
+}
+
+body {
+    background-color: rgb(240, 240, 240);
 }
 
 .comment-icon, .like-icon, .unlike-icon {
@@ -28,24 +32,20 @@ button {
 }
 
 .header {
-    padding: 0 12.5%;
+    padding: 0 15%;
     margin: auto;
     width: 100%;
     display: flex;
     justify-content: space-between;
-    align-items: center;
+    align-items: stretch;
     background-color: #40916C;
 }
 
 .logo {
     color: white;
     text-decoration: none;
-    font-size: 30px;
+    font-size: 36px;
     font-weight: normal;
-}
-
-.right {
-    display: flex;
 }
 
 .profile-header, .logo {
@@ -59,7 +59,9 @@ button {
 }
 
 .profile-header {
-    font-size: 17px;
+    font-size: 18px;
+    font-weight: bold;
+    height: 100%;
 }
 
 .profile-header:hover {
@@ -72,12 +74,16 @@ button {
     height: 32px;
 }
 
+.profile-wrapper {
+    position: relative;
+}
+
 .profile-dropdown {
     display: block;
     position: absolute;
+    width: 100%;
     border-style: solid;
     border-width: 1px;
-    width: 200px;
     background-color: white;
 }
 
@@ -86,29 +92,34 @@ button {
     text-decoration: none;
     padding: 8px;
     color: black;
-    font-size: 17px;
+    font-size: 18px;
+    font-weight: normal;
 }
 
 .profile-dropdown a:hover {
     cursor: pointer;
-    background-color: lightgray;
+    background-color: rgb(240, 240, 240);
 }
 
 .content-wrapper {
     padding: 32px 8px;
-    width: 75%;
+    width: 70%;
     margin: auto;
     display: grid;
-    grid-template-columns: 2fr 1fr;
+    grid-template-columns: 3fr 1fr;
     gap: 16px;
 }
 
 .post-input-wrapper, .comment-input-wrapper, .friend-list,
-.post-list, .user-list, .post {
-    border-style: solid;
-    border-width: 1px;
+.post, .user-list, .post {
+    box-shadow: 0px 0px 0px 1px rgb(140, 140, 140);
     border-radius: 8px;
-    padding: 12px;
+    padding: 16px;
+    background-color: white;
+}
+
+.post {
+    margin-bottom: 16px;
 }
 
 .post-input, .comment-input {
@@ -117,7 +128,7 @@ button {
     resize: none;
     border-style: none;
     outline: none;
-    font-size: 17px;
+    font-size: 18px;
 }
 
 .post-button-wrapper, .comment-button-wrapper {
@@ -130,7 +141,7 @@ button {
     cursor: pointer;
     border-radius: 6px;
     padding: 8px;
-    font-size: 17px;
+    font-size: 18px;
     background-color: #40916C;
     color: white;
     font-weight: bold;
@@ -154,7 +165,7 @@ button {
     display: flex;
     justify-content: flex-start;
     align-items: center;
-    gap: 8px;
+    gap: 4px;
     margin-bottom: 12px;
 }
 
@@ -180,7 +191,7 @@ button {
     justify-content: center;
     align-items: center;
     gap: 8px;
-    font-size: 17px;
+    font-size: 18px;
     font-weight: bold;
     border-radius: 6px;
     background-color: #40916C;
@@ -200,8 +211,15 @@ button {
     display: flex;
     justify-content: flex-start;
     align-items: center;
+    gap: 4px;
+    margin-bottom: 12px;
+}
+
+.comment-header a {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
     gap: 8px;
-    margin-block: 12px;
 }
 
 .comment {
@@ -214,14 +232,14 @@ button {
     border-radius: 6px;
     padding: 8px;
     margin-top: 12px;
-    font-size: 17px;
+    font-size: 18px;
     background-color: #40916C;
     color: white;
     font-weight: bold;
 }
 
 .header-text {
-    font-size: 21px;
+    font-size: 22px;
     margin-bottom: 12px;
 }
 
@@ -261,6 +279,12 @@ button {
     justify-content: flex-start;
     align-items: center;
     gap: 8px;
+}
+
+.comment {
+    border-radius: 8px;
+    padding: 16px;
+    background-color: rgb(240, 240, 240);
 }
 
 .hidden {

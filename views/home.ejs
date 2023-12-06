@@ -5,23 +5,19 @@
     <link rel='stylesheet' href='/stylesheets/homestyle.css' />
 </head>
 <body>
-
     <div class="header">
         <a href="/" class="logo">Sociorama</a>
-        <div class="right">
-            <div class="profile-wrapper">
-                <div class="profile-header">
-                    <img class="profile-picture" src="<%= user.pfp %>">
-                    <p><%= user.firstname %> <%= user.lastname %></p>
-                </div>
-                <div class="profile-dropdown hidden">
-                    <a href="/people/<%= user.username %>/profile">Profile</a>
-                    <a href="/logout">Logout</a>
-                </div>
+        <div class="profile-wrapper">
+            <div class="profile-header">
+                <img class="profile-picture" src="<%= user.pfp %>">
+                <p><%= user.firstname %> <%= user.lastname %></p>
+            </div>
+            <div class="profile-dropdown hidden">
+                <a href="/people/<%= user.username %>/profile">Profile</a>
+                <a href="/logout">Log Out</a>
             </div>
         </div>
     </div>
-
     <div class="content-wrapper">
         <form action="/people/<%= user.username %>/posts/create" method="POST">
             <div class="post-input-wrapper">
@@ -35,7 +31,7 @@
             <p class="header-text">Friends</p>
             <div class="friends">
                 <% if (user.friends.length === 0) { %>
-                    <p>No friends found</p>
+                    <p>No friends yet</p>
                 <% } %>
                 <% user.friends.forEach(function(friend) { %>
                     <div class="friend-cell">
@@ -46,7 +42,7 @@
             <p class="header-text">Friend Requests</p>
             <div>
                 <% if (user.friendRequests.length === 0) { %>
-                    <p>No friend requests found</p>
+                    <p>No friend requests yet</p>
                 <% } %>
                 <% user.friendRequests.forEach(function(friendRequest) { %>
                     <div class="friend-requests">
@@ -74,7 +70,6 @@
             </div>
         </div>
         <div class="post-list">
-            <p class="header-text">Latest Posts</p>
             <% posts.forEach(function(post) { %>
                 <div class="post">
                     <div class="post-header">
@@ -137,27 +132,29 @@
                             </div>
                         </form>
                         <% post.comments.forEach(function(comment) { %>
-                            <div class="comment-header">
-                                <a class="comment-header" href="/people/<%= comment.author.username %>/profile"><img class="profile-picture" src="<%= comment.author.pfp %>"><%= comment.author.firstname %> <%= comment.author.lastname %></a>
-                                <p>commented <%= lowercase(moment(comment.date).calendar()) %></p>
-                                <% if (comment.author.username === user.username) { %>
-                                    <span> | </span>
-                                    <button class="display-comment-update" data-id="<%= comment._id %>">Edit</button>
-                                    <span> | </span>
-                                    <form action="<%= post.url %>/comments/<%= comment._id %>/delete" method="POST">
-                                        <button class="delete-button">Delete</button>
-                                    </form>
-                                <% } %>
-                            </div>
-                            <p class="comment-text<%= comment._id %>"><%= comment.text %></p>
-                            <form class="comment-update<%= comment._id %> hidden" action="<%= post.url %>/comments/<%= comment._id %>/update" method="POST">
-                                <div class="comment-input-wrapper">
-                                    <textarea class="comment-input" name="text" type="text"><%= comment.text %></textarea>
-                                    <div class="comment-button-wrapper">
-                                        <button class="update-button">Update</button>
-                                    </div>
+                            <div class="comment">
+                                <div class="comment-header">
+                                    <a href="/people/<%= comment.author.username %>/profile"><img class="profile-picture" src="<%= comment.author.pfp %>"><%= comment.author.firstname %> <%= comment.author.lastname %></a>
+                                    <p>commented <%= lowercase(moment(comment.date).calendar()) %></p>
+                                    <% if (comment.author.username === user.username) { %>
+                                        <span> | </span>
+                                        <button class="display-comment-update" data-id="<%= comment._id %>">Edit</button>
+                                        <span> | </span>
+                                        <form action="<%= post.url %>/comments/<%= comment._id %>/delete" method="POST">
+                                            <button class="delete-button">Delete</button>
+                                        </form>
+                                    <% } %>
                                 </div>
-                            </form>
+                                <p class="comment-text<%= comment._id %>"><%= comment.text %></p>
+                                <form class="comment-update<%= comment._id %> hidden" action="<%= post.url %>/comments/<%= comment._id %>/update" method="POST">
+                                    <div class="comment-input-wrapper">
+                                        <textarea class="comment-input" name="text" type="text"><%= comment.text %></textarea>
+                                        <div class="comment-button-wrapper">
+                                            <button class="update-button">Update</button>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
                         <% }); %>
                     </div>
                 </div>
