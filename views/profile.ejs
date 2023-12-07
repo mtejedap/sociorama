@@ -10,7 +10,7 @@
         <div class="profile-wrapper">
             <div class="profile-header">
                 <img class="profile-picture" src="<%= currentUser.pfp %>">
-                <p><%= currentUser.firstname %> <%= currentUser.lastname %></p>
+                <p><%= currentUser.firstName %> <%= currentUser.lastName %></p>
             </div>
             <div class="profile-dropdown hidden">
                 <a href="/people/<%= currentUser.username %>/profile">Profile</a>
@@ -29,7 +29,7 @@
                 </form>
             <% } %>
             <div>
-                <p><%= profileUser.firstname %> <%= profileUser.lastname %></p>
+                <p><%= profileUser.firstName %> <%= profileUser.lastName %></p>
                 <p>@<%= profileUser.username %></p>
             </div>
             <% if (profileUser.username === currentUser.username && profileUser.username != "guest") { %>
@@ -54,7 +54,7 @@
             <% posts.forEach(function(post) { %>
                 <div class="post">
                     <div class="post-header">
-                        <a class="post-header-2" href="/people/<%= post.author.username %>/profile"><img class="profile-picture" src="<%= post.author.pfp %>"><%= post.author.firstname %> <%= post.author.lastname %></a>
+                        <a class="post-header-2" href="/people/<%= post.author.username %>/profile"><img class="profile-picture" src="<%= post.author.pfp %>"><%= post.author.firstName %> <%= post.author.lastName %></a>
                         <p>posted <%= lowercase(moment(post.date).calendar()) %></p>
                         <% if (post.author.username === currentUser.username) { %>
                             <span> | </span>
@@ -115,7 +115,7 @@
                         <% post.comments.forEach(function(comment) { %>
                             <div class="comment">
                                 <div class="comment-header">
-                                    <a href="/people/<%= comment.author.username %>/profile"><img class="profile-picture" src="<%= comment.author.pfp %>"><%= comment.author.firstname %> <%= comment.author.lastname %></a>
+                                    <a href="/people/<%= comment.author.username %>/profile"><img class="profile-picture" src="<%= comment.author.pfp %>"><%= comment.author.firstName %> <%= comment.author.lastName %></a>
                                     <p>commented <%= lowercase(moment(comment.date).calendar()) %></p>
                                     <% if (comment.author.username === currentUser.username) { %>
                                         <span> | </span>

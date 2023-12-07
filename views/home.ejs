@@ -10,7 +10,7 @@
         <div class="profile-wrapper">
             <div class="profile-header">
                 <img class="profile-picture" src="<%= user.pfp %>">
-                <p><%= user.firstname %> <%= user.lastname %></p>
+                <p><%= user.firstName %> <%= user.lastName %></p>
             </div>
             <div class="profile-dropdown hidden">
                 <a href="/people/<%= user.username %>/profile">Profile</a>
@@ -32,7 +32,7 @@
                 <% posts.forEach(function(post) { %>
                     <div class="post">
                         <div class="post-header">
-                            <a class="post-header-2" href="/people/<%= post.author.username %>/profile"><img class="profile-picture" src="<%= post.author.pfp %>"><%= post.author.firstname %> <%= post.author.lastname %></a>
+                            <a class="post-header-2" href="/people/<%= post.author.username %>/profile"><img class="profile-picture" src="<%= post.author.pfp %>"><%= post.author.firstName %> <%= post.author.lastName %></a>
                             <p>posted <%= lowercase(moment(post.date).calendar()) %></p>
                             <% if (post.author.username === user.username) { %>
                                 <span> | </span>
@@ -93,7 +93,7 @@
                             <% post.comments.forEach(function(comment) { %>
                                 <div class="comment">
                                     <div class="comment-header">
-                                        <a href="/people/<%= comment.author.username %>/profile"><img class="profile-picture" src="<%= comment.author.pfp %>"><%= comment.author.firstname %> <%= comment.author.lastname %></a>
+                                        <a href="/people/<%= comment.author.username %>/profile"><img class="profile-picture" src="<%= comment.author.pfp %>"><%= comment.author.firstName %> <%= comment.author.lastName %></a>
                                         <p>commented <%= lowercase(moment(comment.date).calendar()) %></p>
                                         <% if (comment.author.username === user.username) { %>
                                             <span> | </span>
@@ -129,7 +129,7 @@
                     <% } %>
                     <% user.friends.forEach(function(friend) { %>
                         <div class="friend-cell">
-                            <a class="friend-cell" href="<%= friend.username %>/profile"><img class="profile-picture" src="<%= friend.pfp %>"><%= friend.firstname %> <%= friend.lastname %></a>
+                            <a class="friend-cell" href="<%= friend.username %>/profile"><img class="profile-picture" src="<%= friend.pfp %>"><%= friend.firstName %> <%= friend.lastName %></a>
                         </div>
                     <% }); %>
                 </div>
@@ -140,7 +140,7 @@
                     <% } %>
                     <% user.friendRequests.forEach(function(friendRequest) { %>
                         <div class="friend-requests">
-                            <a class="friend-requests" href="<%= friendRequest.username %>/profile"><img class="profile-picture" src="<%= friendRequest.pfp %>"><%= friendRequest.firstname %> <%= friendRequest.lastname %></a>
+                            <a class="friend-requests" href="<%= friendRequest.username %>/profile"><img class="profile-picture" src="<%= friendRequest.pfp %>"><%= friendRequest.firstName %> <%= friendRequest.lastName %></a>
                             <form action="<%= friendRequest.username %>/accept" method="POST">
                                 <button class="accept-friend-request">
                                     <div class="accept-friend-request-wrapper">
@@ -167,7 +167,7 @@
                 <p class="header-text">All Users</p>
                 <% userList.forEach(function(user) { %>
                     <div class="user-cell">
-                        <a class="user-cell" href="<%= user.username %>/profile"><img class="profile-picture" src="<%= user.pfp %>"><%= user.firstname %> <%= user.lastname %></a>
+                        <a class="user-cell" href="<%= user.username %>/profile"><img class="profile-picture" src="<%= user.pfp %>"><%= user.firstName %> <%= user.lastName %></a>
                     </div>
                 <% }); %>
             </div>

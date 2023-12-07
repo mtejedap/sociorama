@@ -11,7 +11,7 @@
             <div class="login-box">
                 <form class="login" action="/login" method="POST">
                     <input class="login-username-input" name="username" placeholder="Username" type="text"/>
-                    <input class="login-password-input" name="password" placeholder="Password" type="text"/>
+                    <input class="login-password-input" name="password" placeholder="Password" type="password"/>
                     <% if (errorMessage) { %>
                         <p class="login-error"><%= errorMessage %></p>
                     <% } %>
@@ -28,10 +28,10 @@
                     </svg>
                 </div>
                 <form class="signup" action="/signup" method="POST">
-                    <input class="signup-firstname-input" name="firstname" placeholder="First Name" type="text"/>
-                    <input class="signup-lastname-input" name="lastname" placeholder="Last Name" type="text"/>
+                    <input class="signup-firstname-input" name="firstName" placeholder="First Name" type="text"/>
+                    <input class="signup-lastname-input" name="lastName" placeholder="Last Name" type="text"/>
                     <input class="signup-username-input" name="username" placeholder="Username" type="text"/>
-                    <input class="signup-password-input" name="password" placeholder="Password" type="text"/>
+                    <input class="signup-password-input" name="password" placeholder="Password" type="password"/>
                     <p class="signup-error"></p>
                     <button class="signup-button">Sign Up</button>
                 </form>
@@ -42,8 +42,17 @@
         const signupButton = document.querySelector(".signup-button");
         signupButton.addEventListener("click", async (event) => {
             event.preventDefault();
+            const firstName = document.querySelector(".signup-firstname-input").value;
+            const lastName = document.querySelector(".signup-lastname-input").value;
+            const username = document.querySelector(".signup-username-input").value;
+            const password = document.querySelector(".signup-password-input").value;
+            if (!firstName || !lastName ||
+                !username || !password) {
+                document.querySelector(".signup-error").textContent = "Please fill in all fields";
+                return;
+            }
             const data = {
-                username: document.querySelector(".signup-username-input").value
+                username: username
             }
             const response = await fetch("check-username", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) });
             const responseData = await response.json();

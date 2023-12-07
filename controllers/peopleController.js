@@ -37,7 +37,7 @@ exports.index = asyncHandler(async (req, res, next) => {
     }
     const user = await User.findOne({ username: req.user.username }).populate("friends").populate("friendRequests").exec();
     const posts = await Post.find().sort({ date: -1 }).limit(10).populate({ path: "comments", populate: { path: "author" }, options: { sort: { "date": -1 } } }).populate("author").exec();
-    const userList = await User.find().sort({ firstname: 1 }).exec();
+    const userList = await User.find().sort({ firstName: 1 }).exec();
     res.render("home", { user: user, posts: posts, userList: userList, moment: moment, lowercase: lowercase });
 });
 
