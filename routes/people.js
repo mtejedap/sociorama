@@ -38,9 +38,6 @@ router.get('/:userid/unfriend', checkAuthenticated, peopleController.removeFrien
 // POST request for creating a post
 router.post('/:userid/posts/create', checkAuthenticated, peopleController.postCreate);
 
-// GET request for reading a post
-router.get('/:userid/posts/:postid', checkAuthenticated, peopleController.postRead);
-
 // POST request for updating a post
 router.post('/:userid/posts/:postid/update', checkAuthenticated, peopleController.postUpdate);
 

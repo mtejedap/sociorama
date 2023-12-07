@@ -22,17 +22,32 @@
         <div class="profile-info">
             <img class="profile-picture" src="<%= profileUser.pfp %>">
             <% if (profileUser.username === currentUser.username) { %>
-                <form action="update-pfp" method="post" enctype="multipart/form-data">
-                    <input type="file" name="pfp" accept="image/jpeg, image/png">
-                    <input type="submit" value="Upload">
+                <button class="update-pfp-button">Edit Profile Picture</button>
+                <form class="update-pfp hidden" action="update-pfp" method="post" enctype="multipart/form-data">
+                    <input class="update-button" type="file" name="pfp" accept="image/jpeg, image/png" required>
+                    <input class="update-button" type="submit" value="Upload">
                 </form>
             <% } %>
-            <p><%= profileUser.firstname %> <%= profileUser.lastname %></p>
-            <p>@<%= profileUser.username %></p>
-            <% if (profileUser.username === currentUser.username) { %>
+            <div>
+                <p><%= profileUser.firstname %> <%= profileUser.lastname %></p>
+                <p>@<%= profileUser.username %></p>
+            </div>
+            <% if (profileUser.username === currentUser.username && profileUser.username != "guest") { %>
                 <form action="/people/<%= currentUser.username %>/delete" method="POST">
                     <button>Delete Account</button>
                 </form>
+            <% } %>
+            <% if (profileUser.username !== currentUser.username) { %>
+                <% if (profileUser.friends[0] !== undefined && profileUser.friends.includes(currentUser._id)) { %>
+                    <a href="unfriend">Remove Friend</a>
+                <% } else if (profileUser.friendRequests[0] !== undefined && profileUser.friendRequests.includes(currentUser.username)) { %>
+                <% } else if (profileUser.friendRequests[0] !== undefined && profileUser.friendRequests.includes(currentUser._id)) { %>
+                    <p>Friend Request Sent</p>
+                <% } else if (currentUser.friendRequests[0] !== undefined && currentUser.friendRequests.includes(profileUser._id)) { %>
+                    <p>Friend Request Pending</p>
+                <% } else { %>
+                    <a href="friend">Send Friend Request</a>
+                <% } %>
             <% } %>
         </div>
         <div class="post-list">
@@ -41,7 +56,7 @@
                     <div class="post-header">
                         <a class="post-header-2" href="/people/<%= post.author.username %>/profile"><img class="profile-picture" src="<%= post.author.pfp %>"><%= post.author.firstname %> <%= post.author.lastname %></a>
                         <p>posted <%= lowercase(moment(post.date).calendar()) %></p>
-                        <% if (post.author.username === user.username) { %>
+                        <% if (post.author.username === currentUser.username) { %>
                             <span> | </span>
                             <button class="display-update" data-id="<%= post._id %>">Edit</button>
                             <span> | </span>
@@ -63,7 +78,7 @@
                     </div>
                     <div class="likes-and-comments">
                         <div class="like-wrapper" data-url="<%= post.url %>/like" data-id="<%= post._id %>">
-                            <% if (!post.likeUsers.includes(user.username)) { %>
+                            <% if (!post.likeUsers.includes(currentUser.username)) { %>
                                 <svg class="like-icon like<%= post._id %>" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 21 19">
                                     <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 4C5.5-1.5-1.5 5.5 4 11l7 7 7-7c5.458-5.458-1.542-12.458-7-7Z"/>
                                 </svg>
@@ -102,7 +117,7 @@
                                 <div class="comment-header">
                                     <a href="/people/<%= comment.author.username %>/profile"><img class="profile-picture" src="<%= comment.author.pfp %>"><%= comment.author.firstname %> <%= comment.author.lastname %></a>
                                     <p>commented <%= lowercase(moment(comment.date).calendar()) %></p>
-                                    <% if (comment.author.username === user.username) { %>
+                                    <% if (comment.author.username === currentUser.username) { %>
                                         <span> | </span>
                                         <button class="display-comment-update" data-id="<%= comment._id %>">Edit</button>
                                         <span> | </span>
@@ -127,11 +142,53 @@
             <% }); %>
         </div>
     </div>
-
     <script>
         const profileDropdown = document.querySelector(".profile-header");
         profileDropdown.addEventListener("click", () => {
             document.querySelector(".profile-dropdown").classList.toggle("hidden");
+        });
+        const updatePfpButton = document.querySelector(".update-pfp-button");
+        if (updatePfpButton) {
+            updatePfpButton.addEventListener("click", () => {
+                document.querySelector(".update-pfp").classList.toggle("hidden");
+            });
+        }
+        const likeButtons = document.querySelectorAll(".like-wrapper");
+        likeButtons.forEach(likeButton => {
+            likeButton.addEventListener("click", async () => {
+                const response = await fetch(likeButton.dataset.url, { method: "POST" });
+                const responseData = await response.json();
+                const likes = document.querySelector(".id" + likeButton.dataset.id);
+                likes.textContent = responseData.postLikes;
+                document.querySelector(".like" + likeButton.dataset.id).classList.toggle("hidden");
+                document.querySelector(".unlike" + likeButton.dataset.id).classList.toggle("hidden");
+            });
+        });
+        const commentButtons = document.querySelectorAll(".commentButton");
+        commentButtons.forEach(commentButton => {
+            commentButton.addEventListener("click", () => {
+                document.querySelector(".comment" + commentButton.dataset.id).classList.toggle("hidden");
+            });
+        });
+        const displayComments = document.querySelectorAll(".comment-wrapper");
+        displayComments.forEach(displayComments => {
+            displayComments.addEventListener("click", () => {
+                document.querySelector(".comment-list" + displayComments.dataset.id).classList.toggle("hidden");
+            });
+        });
+        const displayUpdate = document.querySelectorAll(".display-update");
+        displayUpdate.forEach(displayUpdate => {
+            displayUpdate.addEventListener("click", () => {
+                document.querySelector(".post-update" + displayUpdate.dataset.id).classList.toggle("hidden");
+                document.querySelector(".post-text" + displayUpdate.dataset.id).classList.toggle("hidden");
+            });
+        });
+        const displayCommentUpdate = document.querySelectorAll(".display-comment-update");
+        displayCommentUpdate.forEach(displayCommentUpdate => {
+            displayCommentUpdate.addEventListener("click", () => {
+                document.querySelector(".comment-update" + displayCommentUpdate.dataset.id).classList.toggle("hidden");
+                document.querySelector(".comment-text" + displayCommentUpdate.dataset.id).classList.toggle("hidden");
+            });
         });
     </script>
 </body>

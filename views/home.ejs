@@ -19,154 +19,158 @@
         </div>
     </div>
     <div class="content-wrapper">
-        <form action="/people/<%= user.username %>/posts/create" method="POST">
-            <div class="post-input-wrapper">
-                <textarea class="post-input" name="text" placeholder="Write a new post here!" type="text"></textarea>
-                <div class="post-button-wrapper">
-                    <button class="post-button">Post</button>
+        <div class="left-content">
+            <form action="/people/<%= user.username %>/posts/create" method="POST">
+                <div class="post-input-wrapper">
+                    <textarea class="post-input" name="text" placeholder="Write a new post here!" type="text"></textarea>
+                    <div class="post-button-wrapper">
+                        <button class="post-button">Post</button>
+                    </div>
                 </div>
-            </div>
-        </form>
-        <div class="friend-list">
-            <p class="header-text">Friends</p>
-            <div class="friends">
-                <% if (user.friends.length === 0) { %>
-                    <p>No friends yet</p>
-                <% } %>
-                <% user.friends.forEach(function(friend) { %>
-                    <div class="friend-cell">
-                        <a class="friend-cell" href="<%= friend.username %>/profile"><img class="profile-picture" src="<%= friend.pfp %>"><%= friend.firstname %> <%= friend.lastname %></a>
-                    </div>
-                <% }); %>
-            </div>
-            <p class="header-text">Friend Requests</p>
-            <div>
-                <% if (user.friendRequests.length === 0) { %>
-                    <p>No friend requests yet</p>
-                <% } %>
-                <% user.friendRequests.forEach(function(friendRequest) { %>
-                    <div class="friend-requests">
-                        <a class="friend-requests" href="<%= friendRequest.username %>/profile"><img class="profile-picture" src="<%= friendRequest.pfp %>"><%= friendRequest.firstname %> <%= friendRequest.lastname %></a>
-                        <form action="<%= friendRequest.username %>/accept" method="POST">
-                            <button class="accept-friend-request">
-                                <div class="accept-friend-request-wrapper">
-                                    <svg class="accept-friend-request-icon" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 16 12">
-                                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M1 5.917 5.724 10.5 15 1.5"/>
-                                    </svg>
-                                </div>
-                            </button>
-                        </form>
-                        <form action="<%= friendRequest.username %>/reject" method="POST">
-                            <button class="reject-friend-request">
-                                <div class="reject-friend-request-wrapper">
-                                    <svg class="reject-friend-request-icon" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
-                                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"/>
-                                    </svg>
-                                </div>
-                            </button>
-                        </form>
-                    </div>
-                <% }); %>
-            </div>
-        </div>
-        <div class="post-list">
-            <% posts.forEach(function(post) { %>
-                <div class="post">
-                    <div class="post-header">
-                        <a class="post-header-2" href="/people/<%= post.author.username %>/profile"><img class="profile-picture" src="<%= post.author.pfp %>"><%= post.author.firstname %> <%= post.author.lastname %></a>
-                        <p>posted <%= lowercase(moment(post.date).calendar()) %></p>
-                        <% if (post.author.username === user.username) { %>
-                            <span> | </span>
-                            <button class="display-update" data-id="<%= post._id %>">Edit</button>
-                            <span> | </span>
-                            <form action="<%= post.url %>/delete" method="POST">
-                                <button class="delete-button">Delete</button>
-                            </form>
-                        <% } %>
-                    </div>
-                    <div class="post-body">
-                        <p class="post-text<%= post._id %>"><%= post.text %></p>
-                        <form class="post-update<%= post._id %> hidden" action="<%= post.url %>/update" method="POST">
-                            <div class="post-input-wrapper">
-                                <textarea class="post-input" name="text" type="text"><%= post.text %></textarea>
-                                <div class="post-button-wrapper">
-                                    <button class="update-button">Update</button>
-                                </div>
-                            </div>
-                        </form>
-                    </div>
-                    <div class="likes-and-comments">
-                        <div class="like-wrapper" data-url="<%= post.url %>/like" data-id="<%= post._id %>">
-                            <% if (!post.likeUsers.includes(user.username)) { %>
-                                <svg class="like-icon like<%= post._id %>" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 21 19">
-                                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 4C5.5-1.5-1.5 5.5 4 11l7 7 7-7c5.458-5.458-1.542-12.458-7-7Z"/>
-                                </svg>
-                                <svg class="unlike-icon unlike<%= post._id %> hidden" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 18">
-                                    <path d="M17.947 2.053a5.209 5.209 0 0 0-3.793-1.53A6.414 6.414 0 0 0 10 2.311 6.482 6.482 0 0 0 5.824.5a5.2 5.2 0 0 0-3.8 1.521c-1.915 1.916-2.315 5.392.625 8.333l7 7a.5.5 0 0 0 .708 0l7-7a6.6 6.6 0 0 0 2.123-4.508 5.179 5.179 0 0 0-1.533-3.793Z"/>
-                                </svg>
-                            <% } else { %>
-                                <svg class="like-icon like<%= post._id %> hidden" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 21 19">
-                                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 4C5.5-1.5-1.5 5.5 4 11l7 7 7-7c5.458-5.458-1.542-12.458-7-7Z"/>
-                                </svg>
-                                <svg class="unlike-icon unlike<%= post._id %>" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 18">
-                                    <path d="M17.947 2.053a5.209 5.209 0 0 0-3.793-1.53A6.414 6.414 0 0 0 10 2.311 6.482 6.482 0 0 0 5.824.5a5.2 5.2 0 0 0-3.8 1.521c-1.915 1.916-2.315 5.392.625 8.333l7 7a.5.5 0 0 0 .708 0l7-7a6.6 6.6 0 0 0 2.123-4.508 5.179 5.179 0 0 0-1.533-3.793Z"/>
-                                </svg>
-                            <% } %>
-                            <p class="id<%= post._id %>"><%= post.likes %></p>
-                        </div>
-                        <div class="comment-wrapper" data-id="<%= post._id %>">
-                            <svg class="comment-icon" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 18">
-                                <path d="M18 0H2a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h3.546l3.2 3.659a1 1 0 0 0 1.506 0L13.454 14H18a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2Zm-8 10H5a1 1 0 0 1 0-2h5a1 1 0 1 1 0 2Zm5-4H5a1 1 0 0 1 0-2h10a1 1 0 1 1 0 2Z"/>
-                            </svg>
-                            <p><%= post.commentCount %></p>
-                        </div>
-                    </div>
-                    <div class="comment-list<%= post._id %> hidden">
-                        <button class="commentButton" data-id="<%= post._id %>">Add Comment</button>
-                        <form class="comment comment<%= post._id %> hidden" action="<%= post.url %>/comments/create" method="POST">
-                            <div class="comment-input-wrapper">
-                                <textarea class="comment-input" name="text" placeholder="Write a new comment here!" type="text"></textarea>
-                                <div class="comment-button-wrapper">
-                                    <button class="comment-button">Comment</button>
-                                </div>
-                            </div>
-                        </form>
-                        <% post.comments.forEach(function(comment) { %>
-                            <div class="comment">
-                                <div class="comment-header">
-                                    <a href="/people/<%= comment.author.username %>/profile"><img class="profile-picture" src="<%= comment.author.pfp %>"><%= comment.author.firstname %> <%= comment.author.lastname %></a>
-                                    <p>commented <%= lowercase(moment(comment.date).calendar()) %></p>
-                                    <% if (comment.author.username === user.username) { %>
-                                        <span> | </span>
-                                        <button class="display-comment-update" data-id="<%= comment._id %>">Edit</button>
-                                        <span> | </span>
-                                        <form action="<%= post.url %>/comments/<%= comment._id %>/delete" method="POST">
-                                            <button class="delete-button">Delete</button>
-                                        </form>
-                                    <% } %>
-                                </div>
-                                <p class="comment-text<%= comment._id %>"><%= comment.text %></p>
-                                <form class="comment-update<%= comment._id %> hidden" action="<%= post.url %>/comments/<%= comment._id %>/update" method="POST">
-                                    <div class="comment-input-wrapper">
-                                        <textarea class="comment-input" name="text" type="text"><%= comment.text %></textarea>
-                                        <div class="comment-button-wrapper">
-                                            <button class="update-button">Update</button>
-                                        </div>
-                                    </div>
+            </form>
+            <div class="post-list">
+                <% posts.forEach(function(post) { %>
+                    <div class="post">
+                        <div class="post-header">
+                            <a class="post-header-2" href="/people/<%= post.author.username %>/profile"><img class="profile-picture" src="<%= post.author.pfp %>"><%= post.author.firstname %> <%= post.author.lastname %></a>
+                            <p>posted <%= lowercase(moment(post.date).calendar()) %></p>
+                            <% if (post.author.username === user.username) { %>
+                                <span> | </span>
+                                <button class="display-update" data-id="<%= post._id %>">Edit</button>
+                                <span> | </span>
+                                <form action="<%= post.url %>/delete" method="POST">
+                                    <button class="delete-button">Delete</button>
                                 </form>
+                            <% } %>
+                        </div>
+                        <div class="post-body">
+                            <p class="post-text<%= post._id %>"><%= post.text %></p>
+                            <form class="post-update<%= post._id %> hidden" action="<%= post.url %>/update" method="POST">
+                                <div class="post-input-wrapper">
+                                    <textarea class="post-input" name="text" type="text"><%= post.text %></textarea>
+                                    <div class="post-button-wrapper">
+                                        <button class="update-button">Update</button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                        <div class="likes-and-comments">
+                            <div class="like-wrapper" data-url="<%= post.url %>/like" data-id="<%= post._id %>">
+                                <% if (!post.likeUsers.includes(user.username)) { %>
+                                    <svg class="like-icon like<%= post._id %>" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 21 19">
+                                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 4C5.5-1.5-1.5 5.5 4 11l7 7 7-7c5.458-5.458-1.542-12.458-7-7Z"/>
+                                    </svg>
+                                    <svg class="unlike-icon unlike<%= post._id %> hidden" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 18">
+                                        <path d="M17.947 2.053a5.209 5.209 0 0 0-3.793-1.53A6.414 6.414 0 0 0 10 2.311 6.482 6.482 0 0 0 5.824.5a5.2 5.2 0 0 0-3.8 1.521c-1.915 1.916-2.315 5.392.625 8.333l7 7a.5.5 0 0 0 .708 0l7-7a6.6 6.6 0 0 0 2.123-4.508 5.179 5.179 0 0 0-1.533-3.793Z"/>
+                                    </svg>
+                                <% } else { %>
+                                    <svg class="like-icon like<%= post._id %> hidden" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 21 19">
+                                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 4C5.5-1.5-1.5 5.5 4 11l7 7 7-7c5.458-5.458-1.542-12.458-7-7Z"/>
+                                    </svg>
+                                    <svg class="unlike-icon unlike<%= post._id %>" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 18">
+                                        <path d="M17.947 2.053a5.209 5.209 0 0 0-3.793-1.53A6.414 6.414 0 0 0 10 2.311 6.482 6.482 0 0 0 5.824.5a5.2 5.2 0 0 0-3.8 1.521c-1.915 1.916-2.315 5.392.625 8.333l7 7a.5.5 0 0 0 .708 0l7-7a6.6 6.6 0 0 0 2.123-4.508 5.179 5.179 0 0 0-1.533-3.793Z"/>
+                                    </svg>
+                                <% } %>
+                                <p class="id<%= post._id %>"><%= post.likes %></p>
                             </div>
-                        <% }); %>
+                            <div class="comment-wrapper" data-id="<%= post._id %>">
+                                <svg class="comment-icon" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 18">
+                                    <path d="M18 0H2a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h3.546l3.2 3.659a1 1 0 0 0 1.506 0L13.454 14H18a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2Zm-8 10H5a1 1 0 0 1 0-2h5a1 1 0 1 1 0 2Zm5-4H5a1 1 0 0 1 0-2h10a1 1 0 1 1 0 2Z"/>
+                                </svg>
+                                <p><%= post.commentCount %></p>
+                            </div>
+                        </div>
+                        <div class="comment-list<%= post._id %> hidden">
+                            <button class="commentButton" data-id="<%= post._id %>">Add Comment</button>
+                            <form class="comment comment<%= post._id %> hidden" action="<%= post.url %>/comments/create" method="POST">
+                                <div class="comment-input-wrapper">
+                                    <textarea class="comment-input" name="text" placeholder="Write a new comment here!" type="text"></textarea>
+                                    <div class="comment-button-wrapper">
+                                        <button class="comment-button">Comment</button>
+                                    </div>
+                                </div>
+                            </form>
+                            <% post.comments.forEach(function(comment) { %>
+                                <div class="comment">
+                                    <div class="comment-header">
+                                        <a href="/people/<%= comment.author.username %>/profile"><img class="profile-picture" src="<%= comment.author.pfp %>"><%= comment.author.firstname %> <%= comment.author.lastname %></a>
+                                        <p>commented <%= lowercase(moment(comment.date).calendar()) %></p>
+                                        <% if (comment.author.username === user.username) { %>
+                                            <span> | </span>
+                                            <button class="display-comment-update" data-id="<%= comment._id %>">Edit</button>
+                                            <span> | </span>
+                                            <form action="<%= post.url %>/comments/<%= comment._id %>/delete" method="POST">
+                                                <button class="delete-button">Delete</button>
+                                            </form>
+                                        <% } %>
+                                    </div>
+                                    <p class="comment-text<%= comment._id %>"><%= comment.text %></p>
+                                    <form class="comment-update<%= comment._id %> hidden" action="<%= post.url %>/comments/<%= comment._id %>/update" method="POST">
+                                        <div class="comment-input-wrapper">
+                                            <textarea class="comment-input" name="text" type="text"><%= comment.text %></textarea>
+                                            <div class="comment-button-wrapper">
+                                                <button class="update-button">Update</button>
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
+                            <% }); %>
+                        </div>
                     </div>
-                </div>
-            <% }); %>
+                <% }); %>
+            </div>
         </div>
-        <div class="user-list">
-            <p class="header-text">All Users</p>
-            <% userList.forEach(function(user) { %>
-                <div class="user-cell">
-                    <a class="user-cell" href="<%= user.username %>/profile"><img class="profile-picture" src="<%= user.pfp %>"><%= user.firstname %> <%= user.lastname %></a>
+        <div class="right-content">
+            <div class="friend-list">
+                <p class="header-text">Friends</p>
+                <div class="friends">
+                    <% if (user.friends.length === 0) { %>
+                        <p>No friends yet</p>
+                    <% } %>
+                    <% user.friends.forEach(function(friend) { %>
+                        <div class="friend-cell">
+                            <a class="friend-cell" href="<%= friend.username %>/profile"><img class="profile-picture" src="<%= friend.pfp %>"><%= friend.firstname %> <%= friend.lastname %></a>
+                        </div>
+                    <% }); %>
                 </div>
-            <% }); %>
+                <p class="header-text">Friend Requests</p>
+                <div>
+                    <% if (user.friendRequests.length === 0) { %>
+                        <p>No friend requests yet</p>
+                    <% } %>
+                    <% user.friendRequests.forEach(function(friendRequest) { %>
+                        <div class="friend-requests">
+                            <a class="friend-requests" href="<%= friendRequest.username %>/profile"><img class="profile-picture" src="<%= friendRequest.pfp %>"><%= friendRequest.firstname %> <%= friendRequest.lastname %></a>
+                            <form action="<%= friendRequest.username %>/accept" method="POST">
+                                <button class="accept-friend-request">
+                                    <div class="accept-friend-request-wrapper">
+                                        <svg class="accept-friend-request-icon" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 16 12">
+                                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M1 5.917 5.724 10.5 15 1.5"/>
+                                        </svg>
+                                    </div>
+                                </button>
+                            </form>
+                            <form action="<%= friendRequest.username %>/reject" method="POST">
+                                <button class="reject-friend-request">
+                                    <div class="reject-friend-request-wrapper">
+                                        <svg class="reject-friend-request-icon" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
+                                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"/>
+                                        </svg>
+                                    </div>
+                                </button>
+                            </form>
+                        </div>
+                    <% }); %>
+                </div>
+            </div>
+            <div class="user-list">
+                <p class="header-text">All Users</p>
+                <% userList.forEach(function(user) { %>
+                    <div class="user-cell">
+                        <a class="user-cell" href="<%= user.username %>/profile"><img class="profile-picture" src="<%= user.pfp %>"><%= user.firstname %> <%= user.lastname %></a>
+                    </div>
+                <% }); %>
+            </div>
         </div>
     </div>
     <script>

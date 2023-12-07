@@ -32,6 +32,9 @@ function lowercase(str) {
 
 // Display user home page
 exports.index = asyncHandler(async (req, res, next) => {
+    if (req.params.userid !== req.user.username) {
+        res.redirect("/people/" + req.user.username);
+    }
     const user = await User.findOne({ username: req.user.username }).populate("friends").populate("friendRequests").exec();
     const posts = await Post.find().sort({ date: -1 }).limit(10).populate({ path: "comments", populate: { path: "author" }, options: { sort: { "date": -1 } } }).populate("author").exec();
     const userList = await User.find().sort({ firstname: 1 }).exec();
@@ -69,8 +72,8 @@ exports.delete = asyncHandler(async (req, res, next) => {
 exports.profile = asyncHandler(async (req, res, next) => {
     const profileUser = await User.findOne({ username: req.params.userid }).exec();
     const currentUser = await User.findOne({ username: req.user.username }).exec();
-    const posts = await Post.find({ user: profileUser.username }).exec();
-    res.render("profile", { profileUser: profileUser, currentUser: currentUser, posts: posts });
+    const posts = await Post.find({ author: profileUser._id }).sort({ date: -1 }).limit(10).populate({ path: "comments", populate: { path: "author" }, options: { sort: { "date": -1 } } }).populate("author").exec();
+    res.render("profile", { profileUser: profileUser, currentUser: currentUser, posts: posts, moment: moment, lowercase: lowercase });
 });
 
 // Delete existing pfp and replace it with a new one
@@ -154,17 +157,6 @@ exports.postCreate = [
         }
     })
 ];
-
-// Display post
-exports.postRead = asyncHandler(async (req, res, next) => {
-    const post = await Post.findById(req.params.postid).populate("comments").exec();
-    if (post === null) {
-        const err = new Error("Post not found");
-        err.status = 404;
-        return next(err);
-    }
-    res.render("post_info", { post: post, user: req.user.username });
-});
 
 // Update post
 exports.postUpdate = [
